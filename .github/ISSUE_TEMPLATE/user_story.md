@@ -1,22 +1,38 @@
 ---
 name: "User Story"
-about: "Modele standard pour les User Stories"
-title: "US X: [Titre]"
-labels: "user-story"
+about: "Modèle standard pour les User Stories"
+title: "US [ID]: [titre court]"
+labels: ["user-story"]
 assignees: ""
 ---
 
 ### Description
-**En tant que** [role]
-**Je souhaite** [action]
-**Dans le but de** [benefice]
 
-### Criteres d'Acceptation
-- [ ] [Critere 1]
-- [ ] [Critere 2]
+**En tant que** [rôle]  
+**Je souhaite** [action]  
+**Dans le but de** [bénéfice métier]
 
-### Metadonnees
-- **Priorite**: [1/2/3]
-- **Sprint**: [X]
-- **Statut**: To Do
-- **Story Points**: ?
+### Critères d'Acceptation
+
+- [ ] [Critère 1 — observable, testable]
+- [ ] [Critère 2]
+- [ ] [Critère 3]
+
+### Scénarios de Test Clés
+
+| Scénario | Données | Résultat attendu |
+|----------|---------|-----------------|
+| Cas nominal | … | … |
+| Cas d'erreur | … | … |
+
+### Métadonnées
+
+- **Priorité** : [1 = Must / 2 = Should / 3 = Could]
+- **Sprint** : [1 / 2 / 3]
+- **Story Points** : [1 / 2 / 3 / 5 / 8]
+- **Statut** : To Do
+- **Dépend de** : #[numéro d'issue] _(si applicable)_
+
+### Notes Techniques _(optionnel)_
+
+> Contraintes d'implémentation, choix d'architecture, API à utiliser…

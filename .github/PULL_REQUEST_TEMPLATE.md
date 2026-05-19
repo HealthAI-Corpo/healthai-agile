@@ -1,16 +1,27 @@
----
-name: "Pull Request"
-about: "Modele standard pour les PR"
----
+## Description
 
-### Description
-Resume des changements.
+> Résumé des changements apportés et motivation.
 
-### Issues Liees
-Fixes # (numero de l'issue)
+## Issue liée
 
-### Checklist Definition of Done
-- [ ] Code conforme aux conventions (Style, Linting).
-- [ ] Tests unitaires ajoutes ou mis a jour.
-- [ ] Documentation mise a jour.
-- [ ] Valide par le PO.
+Closes #[numéro]
+
+## Type de changement
+
+- [ ] `feat` — nouvelle fonctionnalité
+- [ ] `fix` — correction de bug
+- [ ] `refactor` — refacto sans changement fonctionnel
+- [ ] `docs` / `chore` / `test`
+
+## Checklist Definition of Done
+
+- [ ] Ruff propre (`uv run ruff check .`)
+- [ ] Tests passent (`uv run pytest`)
+- [ ] Nouveaux tests ajoutés pour le cas nominal et les cas d'erreur
+- [ ] Critères d'acceptation de l'US vérifiés
+- [ ] PR liée à l'Issue GitHub (`Closes #X`)
+- [ ] Validé par le PO
+
+## Captures / Demo _(optionnel)_
+
+> Screenshots, logs ou exemple de requête/réponse si pertinent.

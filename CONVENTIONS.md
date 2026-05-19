@@ -1,26 +1,68 @@
 # Conventions de Travail - healthai-workout
 
-## 1. Gestion des Branches (Cadre Strict)
-- **main** : Branche de production, code stable uniquement.
-- **develop** : Branche d'integration. Les tests doivent passer a 100%.
-- **feat/us-[ID]-[description]** : Branche dediee a une User Story (ex: `feat/us-1-auth`).
-- **fix/[description]** : Correction de bug urgent.
+## 1. Gestion des Branches
 
-### Regles d'Or
-- **Zera direct push** : Interdiction de pousser du code directement sur `main` ou `develop`.
-- **Une branche = Une US** : On ne traite qu'un seul sujet a la fois par branche.
-- **Clean History** : On privilegie le "Squash and Merge" pour garder un historique propre.
-- **Suppression post-merge** : Toute branche fusionnee doit etre supprimee du serveur.
+| Branche | Rôle |
+|---------|------|
+| `main` | Production — code stable, jamais poussé directement |
+| `develop` | Intégration — les tests doivent passer à 100 % |
+| `feat/us-[ID]-[slug]` | Une User Story, une branche (ex: `feat/us-1-auth`) |
+| `fix/[slug]` | Correction de bug urgent |
+
+**Règles d'or**
+- Zéro push direct sur `main` ou `develop`.
+- Squash and Merge uniquement — historique propre.
+- Supprimer la branche distante après fusion.
+- Une branche = un seul sujet.
 
 ## 2. Commits (Conventional Commits)
-- `feat:` : Nouvelle fonctionnalite.
-- `fix:` : Correction de bug.
-- `docs:` : Documentation.
-- `chore:` : Maintenance / Outils.
 
-## 3. Workflow de Developpement
-1. Creer une branche depuis `develop`.
-2. Lier la branche a l'Issue GitHub correspondante.
-3. Developper et tester localement.
-4. Ouvrir une PR vers `develop`.
-5. Validation par le PO obligatoire avant fusion.
+```
+<type>(<scope optionnel>): <description courte>
+```
+
+| Type | Usage |
+|------|-------|
+| `feat` | Nouvelle fonctionnalité |
+| `fix` | Correction de bug |
+| `docs` | Documentation uniquement |
+| `test` | Ajout ou modification de tests |
+| `chore` | Maintenance, dépendances, outils |
+| `refactor` | Refacto sans changement de comportement |
+
+## 3. Workflow de Développement
+
+1. Créer la branche depuis `develop` : `git checkout -b feat/us-X-slug develop`
+2. Lier la branche à l'Issue GitHub correspondante dans la description de la PR.
+3. Développer, tester localement (`uv run pytest`), linter (`uv run ruff check .`).
+4. Ouvrir une PR vers `develop` avec le template fourni.
+5. Validation PO obligatoire avant fusion.
+
+## 4. Definition of Done (DoD)
+
+Une US est **Done** quand :
+- [ ] Le code respecte les conventions (ruff propre, pas de warning).
+- [ ] Les tests unitaires couvrent le cas nominal et les cas d'erreur.
+- [ ] La PR est liée à l'Issue GitHub.
+- [ ] Le PO a validé les critères d'acceptation sur la branche de feature.
+- [ ] La branche est fusionnée via Squash and Merge dans `develop`.
+
+## 5. Estimation (Story Points — échelle de Fibonacci)
+
+| Points | Complexité |
+|--------|-----------|
+| 1 | Trivial — moins d'une heure |
+| 2 | Simple — demi-journée |
+| 3 | Modéré — une journée |
+| 5 | Complexe — deux à trois jours |
+| 8 | Très complexe — à découper |
+
+## 6. Labels GitHub
+
+| Label | Usage |
+|-------|-------|
+| `user-story` | Issue de type US |
+| `bug` | Anomalie |
+| `sprint-1` / `sprint-2` / `sprint-3` | Sprint d'appartenance |
+| `priorite-1` / `priorite-2` / `priorite-3` | Priorité MoSCoW |
+| `blocked` | Bloquée par une dépendance |
