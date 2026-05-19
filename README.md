@@ -13,8 +13,8 @@ Module : **healthai-workout** — génération de séances sportives personnalis
 
 ## Liens
 
-- [GitHub Project (Backlog)](https://github.com/orgs/HealthAI-Corpo/projects/3)
-- [Cours Agile](https://github.com/kevinniel/2526-EPSINANTES-DEVIA-AGILE/issues)
+- [GitHub Project (Backlog)](https://github.com/orgs/HealthAI-Corpo/projects/4)
+- [Cours Agile](https://github.com/kevinniel/2526-EPSINANTES-DEVIA-AGILE)
 - [Upstream healthai-ai](https://github.com/HealthAI-Corpo/healthai-ai)
 
 ## Démarrage rapide
@@ -27,8 +27,8 @@ uv run pytest
 
 ## Documentation
 
-- [`docs/fiche-projet.md`](docs/fiche-projet.md) — fiche projet complète
-- [`docs/equipe.md`](docs/equipe.md) — rôles et composition
-- [`docs/questions-client.md`](docs/questions-client.md) — Q&R avec le client
+- [`docs/fiche-projet.md`](docs/project/FICHE-PROJET.md) — fiche projet complète
+- [`docs/equipe.md`](docs/project/EQUIPE.md) — rôles et composition
+- [`docs/questions-client.md`](docs/QUESTIONS-CLIENT.md) — Q&R avec le client
 - [`docs/sprint-1/`](docs/sprint-1/) — planning, daily, review, rétrospective Sprint 1
-- [`CONVENTIONS.md`](CONVENTIONS.md) — branches, commits, DoD, DoR
+- [`CONVENTIONS.md`](docs/project/CONVENTIONS.md) — branches, commits, DoD, DoR
