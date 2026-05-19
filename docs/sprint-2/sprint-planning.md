@@ -16,6 +16,8 @@
 
 | Issue | US | Story Points | Priorité |
 |-------|----|-------------|---------|
+| [#25](https://github.com/HealthAI-Corpo/healthai-agile/issues/25) | feat: RandomForest classifier muscles/intensité | 5 | P1 |
+| [#26](https://github.com/HealthAI-Corpo/healthai-agile/issues/26) | feat: Cross-validation + métriques P/R/F1 | 5 | P1 |
 | [#18](https://github.com/HealthAI-Corpo/healthai-agile/issues/18) | US ML — Modèle prédiction calories | 5 | P1 |
 | [#12](https://github.com/HealthAI-Corpo/healthai-agile/issues/12) | US 8 — Estimation calories | 3 | P1 |
 | [#9](https://github.com/HealthAI-Corpo/healthai-agile/issues/9) | US 5 — Enregistrer séance | 2 | P2 |
@@ -23,7 +25,7 @@
 | [#13](https://github.com/HealthAI-Corpo/healthai-agile/issues/13) | US 11 — Supprimer séance | 1 | P2 |
 | [#11](https://github.com/HealthAI-Corpo/healthai-agile/issues/11) | US 7 — Taux de couverture (PO) | 2 | P3 |
 
-**Total candidats :** 15 points — _sélection à faire lors du planning_
+**Total candidats :** 23 points — _sélection à faire lors du planning (~12–14 SP réalistes pour une demi-journée)_
 
 ---
 
