@@ -27,8 +27,8 @@ uv run pytest
 
 ## Documentation
 
-- [`docs/fiche-projet.md`](docs/project/FICHE-PROJET.md) — fiche projet complète
-- [`docs/equipe.md`](docs/project/EQUIPE.md) — rôles et composition
-- [`docs/questions-client.md`](docs/QUESTIONS-CLIENT.md) — Q&R avec le client
+- [`docs/project/FICHE-PROJET.md`](docs/project/FICHE-PROJET.md) — fiche projet complète
+- [`docs/project/EQUIPE.md`](docs/project/EQUIPE.md) — rôles et composition
+- [`docs/QUESTIONS-CLIENT.md`](docs/QUESTIONS-CLIENT.md) — Q&R avec le client
 - [`docs/sprint-1/`](docs/sprint-1/) — planning, daily, review, rétrospective Sprint 1
-- [`CONVENTIONS.md`](docs/project/CONVENTIONS.md) — branches, commits, DoD, DoR
+- [`docs/project/CONVENTIONS.md`](docs/project/CONVENTIONS.md) — branches, commits, DoD, DoR
