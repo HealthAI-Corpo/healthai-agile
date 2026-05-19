@@ -31,7 +31,7 @@ Les applications de fitness proposent soit des programmes génériques (peu adap
 | Langage | Python 3.14 |
 | API | FastAPI |
 | ML | scikit-learn (RandomForest / DecisionTree) |
-| LLM | API Claude (Anthropic) |
+| LLM | OLLAMA |
 | Matching | RapidFuzz |
 | BDD | SQLite (POC) → PostgreSQL (prod) |
 | Gestion deps | uv |
@@ -41,7 +41,7 @@ Les applications de fitness proposent soit des programmes génériques (peu adap
 ## Contraintes identifiées
 
 - POC limité à 3 sprints (3 demi-journées)
-- Pas d'interface graphique requise — API REST suffisante pour la démo
+- Interface graphique minimale — API REST pouvant être suffisante pour la démo
 - Le LLM doit être cantonné à la génération de séance et à la supervision (pas aux calories)
 - Le dataset alimentaire (dataset 1) est hors scope de ce module
 
