@@ -37,3 +37,6 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+
+/app/back/healthai-training-ia-calories-estimation/data/models/
+
