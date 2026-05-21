@@ -89,3 +89,5 @@ coverage/
 
 # Prisma generated
 apps/api/src/generated/
+
+/app/back/healthai-training-ia-calories-estimation/data/models/*
