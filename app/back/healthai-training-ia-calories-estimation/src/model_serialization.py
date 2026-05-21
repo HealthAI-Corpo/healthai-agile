@@ -482,6 +482,48 @@ def save_training_log(
                 winner = ranking.get('winner', '-').replace('_', ' ').upper()
                 log_content += f"| {metric} | {rf_rank} | {gb_rank} | {bl_rank} | {winner} |\n"
         
+        # Ajouter tableau des feature importances
+        log_content += f"""
+
+---
+
+## 📊 Feature Importance
+
+| Feature | RF Importance (%) | GB Importance (%) |
+|---------|-------------------|-------------------|
+"""
+        
+        # Récupérer les importances
+        rf_importances = rf_eval_result.get('feature_importance', {})
+        gb_importances = gb_eval_result.get('feature_importance', {})
+        
+        # Vérifier et normaliser en pourcentages si nécessaire
+        rf_importances_pct = {}
+        if rf_importances:
+            total_rf = sum(rf_importances.values()) or 1
+            # Si la somme est proche de 100, les valeurs sont déjà en pourcentages
+            if 95 < total_rf < 105:
+                rf_importances_pct = rf_importances
+            else:
+                rf_importances_pct = {k: (v / total_rf * 100) for k, v in rf_importances.items()}
+        
+        gb_importances_pct = {}
+        if gb_importances:
+            total_gb = sum(gb_importances.values()) or 1
+            # Si la somme est proche de 100, les valeurs sont déjà en pourcentages
+            if 95 < total_gb < 105:
+                gb_importances_pct = gb_importances
+            else:
+                gb_importances_pct = {k: (v / total_gb * 100) for k, v in gb_importances.items()}
+        
+        # Trier par RF importance (ordre décroissant)
+        sorted_features = sorted(rf_importances_pct.items(), key=lambda x: x[1], reverse=True)
+        
+        # Ajouter les lignes du tableau
+        for feature, rf_imp_pct in sorted_features:
+            gb_imp_pct = gb_importances_pct.get(feature, 0.0)
+            log_content += f"| {feature} | {rf_imp_pct:.2f} | {gb_imp_pct:.2f} |\n"
+        
         log_content += f"""
 
 ---
