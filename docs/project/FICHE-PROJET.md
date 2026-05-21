@@ -51,7 +51,7 @@ Les applications de fitness proposent soit des programmes génériques (peu adap
 | ML           | scikit-learn (RandomForest / DecisionTree) |
 | LLM          | OLLAMA                                     |
 | Matching     | RapidFuzz                                  |
-| BDD          | SQLite (POC) → PostgreSQL (prod)           |
+| BDD          | PostgreSQL (POC + prod) + MongoDB (recommendations NoSQL) |
 | Gestion deps | uv                                         |
 | Tests        | pytest                                     |
 | Lint         | ruff                                       |
