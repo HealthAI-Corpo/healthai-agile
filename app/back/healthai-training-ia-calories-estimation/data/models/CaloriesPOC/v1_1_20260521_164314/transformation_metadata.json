@@ -1,0 +1,114 @@
+{
+  "encoders": {
+    "sexe": {
+      "M": 0,
+      "m": 0,
+      "male": 0,
+      "Male": 0,
+      "F": 1,
+      "f": 1,
+      "female": 1,
+      "Female": 1
+    },
+    "type_sport": {
+      "method": "onehot",
+      "sports": [
+        "Cardio",
+        "HIIT",
+        "Strength",
+        "Yoga"
+      ],
+      "columns": [
+        "sport_Cardio",
+        "sport_HIIT",
+        "sport_Strength",
+        "sport_Yoga"
+      ]
+    }
+  },
+  "scaler_stats": {
+    "age": {
+      "mean": 36.030565461029035,
+      "std": 12.424241461358383
+    },
+    "sexe": {
+      "mean": 0.4905756495160469,
+      "std": 0.4999111737278489
+    },
+    "poids_kg": {
+      "mean": 70.19740193581254,
+      "std": 20.6460629863519
+    },
+    "taille_cm": {
+      "mean": 173.01375445746308,
+      "std": 12.44420310206585
+    },
+    "bpm_max": {
+      "mean": 179.96535914416708,
+      "std": 11.569270089481183
+    },
+    "bpm_moyen": {
+      "mean": 145.01630157921548,
+      "std": 14.984343643674197
+    },
+    "bpm_repos": {
+      "mean": 63.1935812531839,
+      "std": 7.808209139506387
+    },
+    "duree_seance_minutes": {
+      "mean": 80.57544574630668,
+      "std": 22.08073520712798
+    },
+    "pourcentage_gras": {
+      "mean": 24.14523688232298,
+      "std": 6.080242967303324
+    },
+    "consommation_eau_ml": {
+      "mean": 2677.177789098319,
+      "std": 669.8581311892306
+    },
+    "frequence_sport_jour_semaine": {
+      "mean": 3.27967396841569,
+      "std": 1.0336811328112736
+    },
+    "niveau_experience": {
+      "mean": 1.7809475292919001,
+      "std": 0.7739411735986771
+    },
+    "sport_Cardio": {
+      "mean": 0.2618441161487519,
+      "std": 0.43963823194420987
+    },
+    "sport_HIIT": {
+      "mean": 0.22567498726439122,
+      "std": 0.418026060656041
+    },
+    "sport_Strength": {
+      "mean": 0.260825267447784,
+      "std": 0.43908478373609805
+    },
+    "sport_Yoga": {
+      "mean": 0.25165562913907286,
+      "std": 0.43396436888492385
+    }
+  },
+  "features_cols_order": [
+    "age",
+    "sexe",
+    "poids_kg",
+    "taille_cm",
+    "bpm_max",
+    "bpm_moyen",
+    "bpm_repos",
+    "duree_seance_minutes",
+    "pourcentage_gras",
+    "consommation_eau_ml",
+    "frequence_sport_jour_semaine",
+    "niveau_experience",
+    "sport_Cardio",
+    "sport_HIIT",
+    "sport_Strength",
+    "sport_Yoga"
+  ],
+  "n_features": 16
+}
