@@ -42,7 +42,6 @@ Thumbs.db
 
 /app/back/healthai-training-ia-calories-estimation/data/models/
 
-
 # Dependencies
 node_modules/
 .pnp
