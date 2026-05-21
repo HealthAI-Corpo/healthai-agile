@@ -1,0 +1,162 @@
+services:
+  # ============================================================
+  # DATABASE - PostgreSQL
+  # ============================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: healthai-postgres
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-healthai}
+      POSTGRES_USER: ${POSTGRES_USER:-healthai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-healthai_secure_pwd}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./back/init.sql/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./back/init.sql/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
+      - ./back/init.sql/03_seance_poc.sql:/docker-entrypoint-initdb.d/03_seance_poc.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-healthai}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - healthai-net
+
+  # ============================================================
+  # NOSQL DATABASE - MongoDB
+  # ============================================================
+  mongo:
+    image: mongo:7
+    container_name: healthai-mongo
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - healthai-net
+
+  # ============================================================
+  # GATEWAY PRINCIPALE - API
+  # ============================================================
+  healthai-api:
+    build: ./back/healthai-api
+    container_name: healthai-api
+    ports:
+      - "${HEALTHAI_API_PORT:-8000}:8000"
+    env_file:
+      - ./back/healthai-api/.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-healthai}:${POSTGRES_PASSWORD:-healthai_secure_pwd}@postgres:5432/${POSTGRES_DB:-healthai}
+    volumes:
+      - ./back/healthai-api/src:/app/src
+    command:
+      [
+        "uv",
+        "run",
+        "uvicorn",
+        "src.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+      ]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      healthai-vision:
+        condition: service_started
+      healthai-workout:
+        condition: service_started
+    networks:
+      - healthai-net
+
+  # ============================================================
+  # SERVICE VISION - IA
+  # ============================================================
+  healthai-vision:
+    build: ./back/healthai-vision
+    container_name: healthai-vision
+    ports:
+      - "${HEALTHAI_VISION_PORT:-8001}:8001"
+    env_file:
+      - ./back/healthai-vision/.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-healthai}:${POSTGRES_PASSWORD:-healthai_secure_pwd}@postgres:5432/${POSTGRES_DB:-healthai}
+      - MONGODB_URL=${MONGODB_URL:-mongodb://mongo:27017}
+      - HF_MODEL_NAME=${HF_MODEL_NAME:-yolov8n.pt}
+      - HF_CACHE_DIR=/app/.hf_cache
+    volumes:
+      - ./back/healthai-vision/src:/app/src
+      - hf_cache:/app/.hf_cache
+    command:
+      [
+        "uv",
+        "run",
+        "uvicorn",
+        "src.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8001",
+      ]
+    depends_on:
+      - mongo
+    networks:
+      - healthai-net
+
+  # ============================================================
+  # SERVICE WORKOUT - Exercices
+  # ============================================================
+  healthai-workout:
+    build: ./back/healthai-workout
+    container_name: healthai-workout
+    ports:
+      - "${HEALTHAI_WORKOUT_PORT:-8002}:8002"
+    env_file:
+      - ./back/healthai-workout/.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-healthai}:${POSTGRES_PASSWORD:-healthai_secure_pwd}@postgres:5432/${POSTGRES_DB:-healthai}
+      - MONGODB_URL=${MONGODB_URL:-mongodb://mongo:27017}
+    volumes:
+      - ./back/healthai-workout/src:/app/src
+    command:
+      [
+        "uv",
+        "run",
+        "uvicorn",
+        "src.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8002",
+      ]
+    depends_on:
+      - mongo
+    networks:
+      - healthai-net
+
+  # ============================================================
+  # FRONTEND — Next.js (US 21)
+  # ============================================================
+  healthai-front:
+    build: ./front
+    container_name: healthai-front
+    ports:
+      - "${FRONT_PORT:-3001}:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+    volumes:
+      - ./front/src:/app/src
+    networks:
+      - healthai-net
+
+volumes:
+  postgres-data:
+  mongo-data:
+  hf_cache:
+
+networks:
+  healthai-net:
+    driver: bridge

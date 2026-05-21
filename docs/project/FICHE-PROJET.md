@@ -1,5 +1,23 @@
 # Fiche Projet — healthai-workout
 
+## Vision produit
+
+> **Pour** les sportifs occasionnels et débutants qui veulent un programme d'entraînement sur-mesure sans coach,
+> **healthai-workout** génère en quelques secondes une séance personnalisée par IA, adaptée à leur profil physique réel et à leurs objectifs.
+> **Contrairement** aux applications de fitness génériques, chaque séance est validée contre un référentiel d'exercices et accompagnée d'une estimation calorique basée sur un modèle ML.
+
+### Critères de succès du POC
+
+| Critère                                      | Seuil de validation |
+| -------------------------------------------- | ------------------- |
+| Taux de couverture fuzzy (exercices matchés) | > 60 %              |
+| F1-score macro classifier muscles/intensité  | > 0.65              |
+| MAE modèle calories                          | < 50 kcal           |
+| Latence génération séance (Ollama)           | < 10 secondes       |
+| Contraintes utilisateur respectées           | 100 % des séances   |
+
+---
+
 ## Description courte
 
 POC d'un module de recommandation sportive personnalisée : l'utilisateur reçoit une séance d'entraînement générée par IA, adaptée à son profil physique, avec estimation des calories brûlées via un modèle ML.
@@ -26,17 +44,17 @@ Les applications de fitness proposent soit des programmes génériques (peu adap
 
 ## Stack technique choisie
 
-| Couche | Technologie |
-|--------|------------|
-| Langage | Python 3.14 |
-| API | FastAPI |
-| ML | scikit-learn (RandomForest / DecisionTree) |
-| LLM | OLLAMA |
-| Matching | RapidFuzz |
-| BDD | SQLite (POC) → PostgreSQL (prod) |
-| Gestion deps | uv |
-| Tests | pytest |
-| Lint | ruff |
+| Couche       | Technologie                                |
+| ------------ | ------------------------------------------ |
+| Langage      | Python 3.14                                |
+| API          | FastAPI                                    |
+| ML           | scikit-learn (RandomForest / DecisionTree) |
+| LLM          | OLLAMA                                     |
+| Matching     | RapidFuzz                                  |
+| BDD          | PostgreSQL (POC + prod) + MongoDB (recommendations NoSQL) |
+| Gestion deps | uv                                         |
+| Tests        | pytest                                     |
+| Lint         | ruff                                       |
 
 ## Contraintes identifiées
 
@@ -47,9 +65,10 @@ Les applications de fitness proposent soit des programmes génériques (peu adap
 
 ## Risques techniques
 
-| Risque | Probabilité | Impact | Mitigation |
-|--------|------------|--------|-----------|
-| Taux de couverture fuzzy trop bas (< 60 %) | Moyen | Élevé | Ajuster le seuil, enrichir le dataset de référence |
-| LLM génère des exercices hors format attendu | Moyen | Moyen | Schéma Pydantic strict + prompt engineering |
-| MAE modèle ML calories trop élevée | Faible | Moyen | Feature engineering, tuning hyperparamètres |
-| API LLM indisponible en démo | Faible | Élevé | Réponse de fallback mocquée pour la démo |
+| Risque                                       | Probabilité | Impact   | Mitigation                                                       |
+| -------------------------------------------- | ----------- | -------- | ---------------------------------------------------------------- |
+| Taux de couverture fuzzy trop bas (< 60 %)   | Moyen       | Élevé    | Ajuster le seuil, enrichir le dataset de référence               |
+| LLM génère des exercices hors format attendu | Moyen       | Moyen    | Schéma Pydantic strict + prompt engineering                      |
+| MAE modèle ML calories trop élevée           | Faible      | Moyen    | Feature engineering, tuning hyperparamètres                      |
+| Ollama indisponible en séance (RAM, réseau)  | Élevé       | Bloquant | Mock JSON `tests/fixtures/session_mock.json` à préparer avant S1 |
+| Dataset exercices de référence absent        | Élevé       | Bloquant | Extraire depuis `healthai-ai` avant Sprint 1 (voir #8)           |

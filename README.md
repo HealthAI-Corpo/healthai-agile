@@ -17,14 +17,6 @@ Module : **healthai-workout** — génération de séances sportives personnalis
 - [Cours Agile](https://github.com/kevinniel/2526-EPSINANTES-DEVIA-AGILE)
 - [Upstream healthai-ai](https://github.com/HealthAI-Corpo/healthai-ai)
 
-## Démarrage rapide
-
-```bash
-uv sync
-uv run python main.py
-uv run pytest
-```
-
 ## Documentation
 
 - [`docs/project/FICHE-PROJET.md`](docs/project/FICHE-PROJET.md) — fiche projet complète
