@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 import os
 import httpx
+=======
+>>>>>>> 48e2171 (release: Sprint 1 (#39))
 from fastapi import FastAPI
 
 app = FastAPI(title="HealthAI Workout Service")
 
+<<<<<<< HEAD
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://healthai-ollama-workout:11434")
 from contextlib import asynccontextmanager
 
@@ -24,6 +28,8 @@ app = FastAPI(title="HealthAI Workout Service", lifespan=lifespan)
 
 app.include_router(sessions_router)
 
+=======
+>>>>>>> 48e2171 (release: Sprint 1 (#39))
 
 @app.get("/")
 async def root():
@@ -32,6 +38,7 @@ async def root():
 
 @app.get("/health")
 async def health():
+<<<<<<< HEAD
     # Vérification ultra-rapide si Ollama répond au ping
     try:
         async with httpx.AsyncClient(timeout=2.0) as client:
@@ -47,3 +54,7 @@ async def health():
         "service": "healthai-workout",
         "ollama_integration": ollama_status,  
     }
+=======
+    # Verification
+    return {"status": "online", "service": "healthai-workout"}
+>>>>>>> 48e2171 (release: Sprint 1 (#39))

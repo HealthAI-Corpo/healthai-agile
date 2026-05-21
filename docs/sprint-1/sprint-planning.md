@@ -12,8 +12,6 @@
 
 *Critère de succès : Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le référentiel PostgreSQL.*
 
-_Critère de succès : Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le référentiel PostgreSQL._
-
 ---
 
 ## Décision de scope
@@ -128,7 +126,6 @@ Ne pas commencer #7 avant que #22 soit Done.
 ## Definition of Ready (DoR) — rappel
 
 Avant de commencer une issue :
-
 - [ ] Critères d'acceptation clairs et compris par le développeur
 - [ ] Dépendances disponibles (ex : BDD initialisée avant Profil)
 - [ ] Estimation validée en équipe
@@ -136,7 +133,6 @@ Avant de commencer une issue :
 ## Definition of Done (DoD) — rappel
 
 Une issue est Done quand :
-
 - [ ] `uv run ruff check .` passe sans erreur
 - [ ] `uv run pytest` passe (cas nominal + cas d'erreur)
 - [ ] PR liée à l'issue, validée par le PO

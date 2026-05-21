@@ -40,8 +40,11 @@ ENV/
 .DS_Store
 Thumbs.db
 
+<<<<<<< HEAD
 /app/back/healthai-training-ia-calories-estimation/data/models/
 
+=======
+>>>>>>> 48e2171 (release: Sprint 1 (#39))
 # Dependencies
 node_modules/
 .pnp

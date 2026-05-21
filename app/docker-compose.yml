@@ -17,7 +17,11 @@ services:
       - ./back/init.sql/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
       - ./back/init.sql/03_seance_poc.sql:/docker-entrypoint-initdb.d/03_seance_poc.sql
     healthcheck:
+<<<<<<< HEAD
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-healthai}"]
+=======
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-healthai}" ]
+>>>>>>> 48e2171 (release: Sprint 1 (#39))
       interval: 10s
       timeout: 5s
       retries: 5
@@ -136,6 +140,7 @@ services:
       - mongo
     networks:
       - healthai-net
+<<<<<<< HEAD
   # ============================================================
   # INTELLIGENCE ARTIFICIELLE - Ollama Serveur
   # ============================================================
@@ -172,6 +177,8 @@ services:
       curl -X POST http://healthai-ollama:11434/api/pull -d '{\"name\": \"'$$OLLAMA_MODEL'\"}';
       echo '\nModèle '$$OLLAMA_MODEL' installé avec succès !';
       "
+=======
+>>>>>>> 48e2171 (release: Sprint 1 (#39))
 
   # ============================================================
   # FRONTEND — Next.js (US 21)
@@ -192,7 +199,10 @@ volumes:
   postgres-data:
   mongo-data:
   hf_cache:
+<<<<<<< HEAD
   ollama-storage:
+=======
+>>>>>>> 48e2171 (release: Sprint 1 (#39))
 
 networks:
   healthai-net:
