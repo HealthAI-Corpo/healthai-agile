@@ -138,17 +138,19 @@ services:
       - healthai-net
 
   # ============================================================
-  # FRONTEND (optionnel - à décommenter si prêt)
+  # FRONTEND — Next.js (US 21)
   # ============================================================
-  # healthai-front:
-  #   build: ./front
-  #   container_name: healthai-front
-  #   ports:
-  #     - "${FRONT_PORT:-3000}:3000"
-  #   volumes:
-  #     - ./front:/app
-  #   networks:
-  #     - healthai-net
+  healthai-front:
+    build: ./front
+    container_name: healthai-front
+    ports:
+      - "${FRONT_PORT:-3001}:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+    volumes:
+      - ./front/src:/app/src
+    networks:
+      - healthai-net
 
 volumes:
   postgres-data:
