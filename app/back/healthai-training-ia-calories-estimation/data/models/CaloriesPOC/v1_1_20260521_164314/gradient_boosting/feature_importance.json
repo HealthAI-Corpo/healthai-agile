@@ -1,0 +1,18 @@
+{
+  "duree_seance_minutes": 24.231953613903183,
+  "pourcentage_gras": 12.5244130506385,
+  "poids_kg": 9.006291559215429,
+  "bpm_moyen": 8.082963197357724,
+  "consommation_eau_ml": 7.695656041260941,
+  "niveau_experience": 6.8582957272045135,
+  "bpm_repos": 6.386487024937952,
+  "age": 5.9341550271914425,
+  "taille_cm": 5.849987122419058,
+  "bpm_max": 5.42234536785927,
+  "frequence_sport_jour_semaine": 4.411475351250411,
+  "sexe": 2.066013677513857,
+  "sport_Yoga": 0.5190875210403686,
+  "sport_HIIT": 0.44720116561181766,
+  "sport_Cardio": 0.3252038045675967,
+  "sport_Strength": 0.23847074802792714
+}
