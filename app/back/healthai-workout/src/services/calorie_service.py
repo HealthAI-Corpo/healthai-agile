@@ -4,7 +4,7 @@ Service pour les prédictions de calories brûlées avec le modèle CaloriesIA
 
 import logging
 import numpy as np
-from typing import Dict, Tuple
+from typing import Dict
 from fastapi import HTTPException
 
 logger = logging.getLogger(__name__)
@@ -165,39 +165,8 @@ class CalorieService:
                 detail=f"Erreur de normalisation: {str(e)}"
             )
 
-    def _calculate_confidence(self, prediction: float) -> float:
-        """
-        Calcule la confiance du modèle basée sur la variance des prédictions
-        des arbres du Random Forest
 
-        Args:
-            prediction: Prédiction du modèle
-
-        Returns:
-            float entre 0 et 1
-        """
-        try:
-            # Obtenir les prédictions de chaque arbre
-            predictions_all_trees = np.array([
-                tree.predict([[1]*11])[0] for tree in self.model.estimators_
-            ])
-
-            # Calculer la confiance basée sur la variance
-            std_dev = np.std(predictions_all_trees)
-            mean_pred = np.mean(predictions_all_trees)
-
-            # Confiance inversement proportionnelle à la variance relative
-            confidence = 1 / (1 + std_dev / (abs(mean_pred) + 1e-6))
-            confidence = np.clip(float(confidence), 0, 1)
-
-            logger.info(f"[CONFIDENCE] Calculée: {confidence:.2f}")
-            return confidence
-
-        except Exception as e:
-            logger.warning(f"[WARNING] Confiance par défaut: {str(e)}")
-            return 0.80
-
-    def predict(self, request_data: Dict) -> Tuple[float, float]:
+    def predict(self, request_data: Dict) -> float:
         """
         Effectue une prédiction complète des calories brûlées
 
@@ -205,7 +174,7 @@ class CalorieService:
             request_data: Dict avec les 11 features
 
         Returns:
-            Tuple (prediction: float, confidence: float)
+            float: Prédiction des calories brûlées
 
         Raises:
             HTTPException: En cas d'erreur de validation ou prédiction
@@ -232,15 +201,11 @@ class CalorieService:
             prediction = self.model.predict(normalized_features)[0]
             logger.info(f"[PREDICTION] Prédiction brute: {prediction:.2f} kcal")
 
-            # 6. Calculer la confiance
-            confidence = self._calculate_confidence(prediction)
-
             logger.info(
-                f"[PREDICT_END] Succès - Prédiction: {prediction:.2f} kcal, "
-                f"Confiance: {confidence:.2f}"
+                f"[PREDICT_END] Succès - Prédiction: {prediction:.2f} kcal"
             )
 
-            return float(prediction), confidence
+            return float(prediction)
 
         except HTTPException:
             raise

@@ -136,7 +136,6 @@ async def predict_calories(
 
     **Réponse:**
     - prediction: float - Calories brûlées estimées
-    - confidence: float - Confiance du modèle (0-1)
     - model_version: str - Version du modèle
     - features_used: int - Nombre de features (toujours 11)
     - model_name: str - Nom du modèle
@@ -157,20 +156,18 @@ async def predict_calories(
         request_data = request.model_dump()
 
         # Prédire
-        prediction, confidence = service.predict(request_data)
+        prediction = service.predict(request_data)
 
         # Construire la réponse
         response = CalorieEstimationResponse(
             prediction=round(prediction, 2),
-            confidence=round(confidence, 2),
             model_version="1.0.0",
             features_used=11,
             model_name="CaloriesIA_1_0_0"
         )
 
         logger.info(
-            f"[ENDPOINT] Réponse: prediction={response.prediction} kcal, "
-            f"confidence={response.confidence}"
+            f"[ENDPOINT] Réponse: prediction={response.prediction} kcal"
         )
 
         return response
