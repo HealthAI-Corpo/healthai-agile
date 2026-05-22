@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from src.database_mongo import mongo_db
+from src.routers.sessions import router as sessions_router
 
 
 @asynccontextmanager
@@ -13,6 +14,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="HealthAI Workout Service", lifespan=lifespan)
+
+app.include_router(sessions_router)
 
 
 @app.get("/")
