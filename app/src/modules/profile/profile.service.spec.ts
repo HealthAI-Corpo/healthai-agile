@@ -5,6 +5,7 @@ import { ProfilSante } from './profil-sante.entity';
 import { ProfileService } from './profile.service';
 import { UpsertProfileDto } from './dto/upsert-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UsersService } from '../users/users.service';
 
 const VALID_DTO: UpsertProfileDto = {
   poids_kg: 75,
@@ -14,11 +15,7 @@ const VALID_DTO: UpsertProfileDto = {
 };
 
 const USER_ID = 1;
-
-function makeRepo(overrides: Partial<Record<keyof ReturnType<typeof mockRepo>, jest.Mock>> = {}) {
-  const base = mockRepo();
-  return { ...base, ...overrides };
-}
+const MOCK_USER = { id_utilisateur: USER_ID, email: 'test@healthai.fr', date_de_naissance: '1990-01-01' };
 
 function mockRepo() {
   return {
@@ -38,6 +35,7 @@ describe('ProfileService', () => {
       providers: [
         ProfileService,
         { provide: getRepositoryToken(ProfilSante), useValue: repo },
+        { provide: UsersService, useValue: { findById: jest.fn().mockResolvedValue(MOCK_USER) } },
       ],
     }).compile();
 
@@ -47,14 +45,16 @@ describe('ProfileService', () => {
   // ── getProfile ────────────────────────────────────────────────────────────
 
   describe('getProfile', () => {
-    it('retourne le profil existant', async () => {
+    it('retourne le profil existant avec l\'âge calculé', async () => {
       const profil = { id_profil: 1, id_utilisateur: USER_ID, poids_kg: 75 };
       repo.findOne.mockResolvedValue(profil);
 
       const result = await service.getProfile(USER_ID);
 
       expect(repo.findOne).toHaveBeenCalledWith({ where: { id_utilisateur: USER_ID } });
-      expect(result).toEqual(profil);
+      expect(result.poids_kg).toBe(75);
+      expect(typeof result.age).toBe('number');
+      expect(result.age).toBeGreaterThan(0);
     });
 
     it('lève NotFoundException si aucun profil', async () => {

@@ -1,16 +1,15 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import { Repository } from 'typeorm';
 import { JwtAuthGuard } from '../src/modules/auth/guards/jwt-auth.guard';
 import { ProfilSante } from '../src/modules/profile/profil-sante.entity';
 import { ProfileModule } from '../src/modules/profile/profile.module';
+import { UsersService } from '../src/modules/users/users.service';
 
 const FAKE_USER_ID = 42;
 
-// Remplace JwtAuthGuard : injecte directement l'utilisateur de test
 class MockJwtGuard {
   canActivate(ctx: import('@nestjs/common').ExecutionContext) {
     const req = ctx.switchToHttp().getRequest();
@@ -18,6 +17,15 @@ class MockJwtGuard {
     return true;
   }
 }
+
+// UsersService mocké : retourne un user avec date_de_naissance pour le calcul d'âge
+const mockUsersService = {
+  findById: jest.fn().mockResolvedValue({
+    id_utilisateur: FAKE_USER_ID,
+    email: 'test@healthai.fr',
+    date_de_naissance: '1990-05-15',
+  }),
+};
 
 const VALID_PAYLOAD = {
   poids_kg: 75,
@@ -28,7 +36,7 @@ const VALID_PAYLOAD = {
 
 describe('Profile (e2e)', () => {
   let app: INestApplication;
-  let repo: Repository<ProfilSante>;
+  let profilRepo: Repository<ProfilSante>;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -44,6 +52,8 @@ describe('Profile (e2e)', () => {
     })
       .overrideGuard(JwtAuthGuard)
       .useClass(MockJwtGuard)
+      .overrideProvider(UsersService)
+      .useValue(mockUsersService)
       .compile();
 
     app = module.createNestApplication();
@@ -53,12 +63,11 @@ describe('Profile (e2e)', () => {
     );
     await app.init();
 
-    repo = module.get(getRepositoryToken(ProfilSante));
+    profilRepo = module.get(getRepositoryToken(ProfilSante));
   });
 
   afterAll(() => app.close());
-
-  afterEach(() => repo.clear());
+  afterEach(() => profilRepo.clear());
 
   // ── GET /api/v1/profile ──────────────────────────────────────────────────
 
@@ -67,8 +76,8 @@ describe('Profile (e2e)', () => {
       request(app.getHttpServer()).get('/api/v1/profile').expect(404),
     );
 
-    it('200 avec le profil existant', async () => {
-      await repo.save(repo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
+    it('200 retourne le profil avec l\'âge calculé', async () => {
+      await profilRepo.save(profilRepo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
 
       const { body } = await request(app.getHttpServer())
         .get('/api/v1/profile')
@@ -76,6 +85,8 @@ describe('Profile (e2e)', () => {
 
       expect(body.id_utilisateur).toBe(FAKE_USER_ID);
       expect(body.poids_kg).toBe(VALID_PAYLOAD.poids_kg);
+      expect(typeof body.age).toBe('number');
+      expect(body.age).toBeGreaterThan(0);
     });
   });
 
@@ -113,7 +124,7 @@ describe('Profile (e2e)', () => {
     });
 
     it('409 si un profil existe déjà', async () => {
-      await repo.save(repo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
+      await profilRepo.save(profilRepo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
 
       await request(app.getHttpServer())
         .post('/api/v1/profile')
@@ -147,7 +158,7 @@ describe('Profile (e2e)', () => {
 
   describe('PATCH /api/v1/profile', () => {
     it('200 met à jour le profil existant avec tous les champs', async () => {
-      await repo.save(repo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
+      await profilRepo.save(profilRepo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
 
       const { body } = await request(app.getHttpServer())
         .patch('/api/v1/profile')
@@ -159,7 +170,7 @@ describe('Profile (e2e)', () => {
     });
 
     it('200 PATCH partiel — seul hr_max modifié, autres champs inchangés', async () => {
-      await repo.save(repo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
+      await profilRepo.save(profilRepo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
 
       const { body } = await request(app.getHttpServer())
         .patch('/api/v1/profile')

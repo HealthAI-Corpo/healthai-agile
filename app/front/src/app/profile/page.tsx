@@ -19,6 +19,7 @@ const EMPTY: Omit<ProfileData, 'id_profil' | 'id_utilisateur' | 'imc'> = {
 
 export default function ProfilePage() {
   const [form, setForm] = useState(EMPTY)
+  const [age, setAge] = useState<number | null>(null)
   const [imc, setImc] = useState<number | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -42,6 +43,7 @@ export default function ProfilePage() {
           experience_sportive: p.experience_sportive ?? '',
         })
         setImc(p.imc ?? null)
+        setAge(p.age ?? null)
       })
       .catch((err: Error) => {
         // 404 = premier login, formulaire vide attendu
@@ -88,6 +90,11 @@ export default function ProfilePage() {
         <section>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">Données physiques</h2>
           <div className="grid grid-cols-2 gap-4">
+            {age !== null && (
+              <Field label="Âge">
+                <input type="text" value={`${age} ans`} disabled className={`${inputCls} bg-gray-50 text-gray-500 cursor-not-allowed`} />
+              </Field>
+            )}
             <Field label="Poids (kg)" required>
               <input
                 type="number" step="0.1" min="20" max="300" required

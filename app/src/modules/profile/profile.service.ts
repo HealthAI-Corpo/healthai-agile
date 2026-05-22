@@ -4,18 +4,23 @@ import { Repository } from 'typeorm';
 import { ProfilSante } from './profil-sante.entity';
 import { UpsertProfileDto } from './dto/upsert-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(ProfilSante)
     private readonly repo: Repository<ProfilSante>,
+    private readonly usersService: UsersService,
   ) {}
 
-  async getProfile(userId: number): Promise<ProfilSante> {
-    const profil = await this.repo.findOne({ where: { id_utilisateur: userId } });
+  async getProfile(userId: number): Promise<ProfilSante & { age: number }> {
+    const [profil, user] = await Promise.all([
+      this.repo.findOne({ where: { id_utilisateur: userId } }),
+      this.usersService.findById(userId),
+    ]);
     if (!profil) throw new NotFoundException('Profil introuvable');
-    return profil;
+    return { ...profil, age: this.computeAge(user!.date_de_naissance) };
   }
 
   async createProfile(userId: number, dto: UpsertProfileDto): Promise<ProfilSante> {
@@ -54,5 +59,14 @@ export class ProfileService {
   private computeImc(poids_kg: number, taille_cm: number): number {
     const taille_m = taille_cm / 100;
     return Math.round((poids_kg / (taille_m * taille_m)) * 10) / 10;
+  }
+
+  private computeAge(dateNaissance: string): number {
+    const birth = new Date(dateNaissance);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    return age;
   }
 }
