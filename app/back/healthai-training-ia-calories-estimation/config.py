@@ -57,7 +57,6 @@ CATEGORICAL_COLS = {
         "M": 0, "m": 0, "male": 0, "Male": 0,
         "F": 1, "f": 1, "female": 1, "Female": 1,
     },
-    # PHASE 6 MOD: Sport encodé comme sexe (mapping simple 0/1)
     # Au lieu de one-hot (2 colonnes), une seule colonne: 0=Cardio, 1=Force
     # Cardio: Cardio + HIIT (effort cardio-vasculaire)
     # Force: Strength + Yoga (effort musculaire/flexibilité)
@@ -88,11 +87,14 @@ FILL_MISSING = False              # True : remplir avec la moyenne/médiane
 # ============================================================================
 
 # Random Forest
+# PHASE 6 OPTIM: Optimisation des hyperparamètres pour réduire l'overfitting
+# Ancien (v1_11): n_est=100, max_depth=15, min_split=5, min_leaf=2
+# Nouveau (v1_12+): Plus conservatif pour meilleure généralisation
 RF_PARAMS = {
-    "n_estimators": 100,
-    "max_depth": 15,
-    "min_samples_split": 5,
-    "min_samples_leaf": 2,
+    "n_estimators": 150,        # Augmenté de 100 → 150 (stabilité ensemble)
+    "max_depth": 12,            # Réduit de 15 → 12 (moins d'overfitting)
+    "min_samples_split": 10,    # Augmenté de 5 → 10 (arbres moins spécialisés)
+    "min_samples_leaf": 4,      # Augmenté de 2 → 4 (feuilles plus générales)
     "random_state": RANDOM_STATE,
     "n_jobs": -1,
 }
