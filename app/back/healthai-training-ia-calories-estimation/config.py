@@ -39,7 +39,10 @@ SCHEMA = {
     "type_sport": "str",                    # Texte
     "pourcentage_gras": "float64",
     "consommation_eau_ml": "float64",
-    "frequence_sport_jour_semaine": "int64",
+    # PHASE 6 MOD: Suppression de frequence_sport_jour_semaine
+    # Raison: 1) Importance marginale (4-5%), 2) Redondant avec durée/BPM,
+    #         3) Variable de profil utilisateur, pas de séance actuelle
+    # "frequence_sport_jour_semaine": "int64",  # REMOVED
     "niveau_experience": "int64",           # 1-5
 }
 
