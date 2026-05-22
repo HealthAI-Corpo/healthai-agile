@@ -43,3 +43,28 @@ class CalorieEstimationResponse(BaseModel):
     model_version: str = Field(default="1.0.0", description="Version du modèle")
     features_used: int = Field(default=11, description="Nombre de features utilisées")
     model_name: str = Field(default="CaloriesIA_1_0_0", description="Nom du modèle")
+
+
+class CalorieEstimationWithDefaultsRequest(BaseModel):
+    """Modèle d'entrée avec features optionnelles (imputées par défaut)"""
+    imc: float | None = Field(None, gt=0, description="Indice de Masse Corporelle")
+    age: int | None = Field(None, gt=0, lt=150, description="Âge du pratiquant")
+    sexe: str | None = Field(None, pattern="^[MFmf]$", description="Sexe: M ou F")
+    bpm_max: float | None = Field(None, gt=0, description="BPM maximal")
+    bpm_moyen: float | None = Field(None, gt=0, description="BPM moyen")
+    bpm_repos: float | None = Field(None, gt=0, description="BPM au repos")
+    duree_seance_minutes: float | None = Field(None, gt=0, description="Durée en minutes")
+    type_sport: str | None = Field(None, description="Type de sport")
+    pourcentage_gras: float | None = Field(None, ge=0, le=100, description="Pourcentage gras")
+    consommation_eau_ml: float | None = Field(None, ge=0, description="Eau ml")
+    niveau_experience: int | None = Field(None, ge=0, le=5, description="Niveau expérience")
+
+
+class CalorieEstimationWithDefaultsResponse(BaseModel):
+    """Réponse avec indication des valeurs imputées"""
+    prediction: float = Field(..., description="Calories brûlées estimées")
+    model_version: str = Field(default="1.0.0", description="Version du modèle")
+    features_used: int = Field(default=11, description="Nombre de features")
+    model_name: str = Field(default="CaloriesIA_1_0_0", description="Nom du modèle")
+    imputed_features: dict = Field(default_factory=dict, description="Features imputées avec leurs valeurs par défaut")
+    original_values: dict = Field(default_factory=dict, description="Features originales fournies")
