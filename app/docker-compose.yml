@@ -160,6 +160,42 @@ services:
       - mongo
     networks:
       - healthai-net
+  # ============================================================
+  # INTELLIGENCE ARTIFICIELLE - Ollama Serveur
+  # ============================================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: healthai-ollama-workout
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-storage:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h # Maintient le modèle chaud en RAM sur CPU
+    networks:
+      - healthai-net
+    restart: unless-stopped
+
+  # ============================================================
+  # SCRIPT DE PRÉCHARGEMENT AUTOMATIQUE DU MODELE
+  # ============================================================
+  ollama-pull-model:
+    image: curlimages/curl:latest
+    container_name: healthai-workout-ollama-pull
+    networks:
+      - healthai-net
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:0.5b}
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Attente du démarrage d Ollama...';
+      while ! curl -s http://healthai-ollama:11434/api/tags > /dev/null; do sleep 2; done;
+      echo 'Ollama est prêt. Téléchargement automatique du modèle '$$OLLAMA_MODEL'...';
+      curl -X POST http://healthai-ollama:11434/api/pull -d '{\"name\": \"'$$OLLAMA_MODEL'\"}';
+      echo '\nModèle '$$OLLAMA_MODEL' installé avec succès !';
+      "
 
   # ============================================================
   # INTELLIGENCE ARTIFICIELLE - Ollama Serveur

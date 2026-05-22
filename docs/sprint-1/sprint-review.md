@@ -24,7 +24,6 @@
 
 ## Fonctionnalités non terminées
 
-<<<<<<< HEAD
 | Issue                          | Raison                                    | Report   |
 | ------------------------------ | ----------------------------------------- | -------- |
 | #6 — US 2 Profil sportif       | Sprint trop court, dépendait de #20       | Sprint 2 |
@@ -33,14 +32,13 @@
 | #12 — US 8 Calories            | Tiré en avance, non commencé              | Sprint 2 |
 | #23 — CI GitHub Actions        | Stretch goal non atteint                  | Sprint 2 |
 =======
-| Issue | Raison | Report |
-|-------|--------|--------|
-| #6 — US 2 Profil sportif | Sprint trop court, dépendait de #20 | Sprint 2 |
+| Issue                          | Raison                                    | Report   |
+| ------------------------------ | ----------------------------------------- | -------- |
+| #6 — US 2 Profil sportif       | Sprint trop court, dépendait de #20       | Sprint 2 |
 | #7 — US 3 Génération séance IA | Bloqué sur #20 + #22 non terminés à temps | Sprint 2 |
-| #8 — US 4 Matching fuzzy | Dépend de #7 | Sprint 2 |
-| #12 — US 8 Calories | Tiré en avance, non commencé | Sprint 2 |
-| #23 — CI GitHub Actions | Stretch goal non atteint | Sprint 2 |
->>>>>>> 48e2171 (release: Sprint 1 (#39))
+| #8 — US 4 Matching fuzzy       | Dépend de #7                              | Sprint 2 |
+| #12 — US 8 Calories            | Tiré en avance, non commencé              | Sprint 2 |
+| #23 — CI GitHub Actions        | Stretch goal non atteint                  | Sprint 2 |
 
 ---
 
@@ -74,7 +72,6 @@ Oui — via Swagger UI + interface Next.js
 
 ## Métriques Sprint 1
 
-<<<<<<< HEAD
 | Métrique                        | Valeur cible | Valeur réelle                  |
 | ------------------------------- | ------------ | ------------------------------ |
 | Points engagés                  | 20           | 23 (ajouts en cours de sprint) |
@@ -82,12 +79,3 @@ Oui — via Swagger UI + interface Next.js
 | Vélocité                        | —            | 10 SP                          |
 | Taux de couverture fuzzy (US 4) | > 60 %       | — (non livré)                  |
 | Tests passants                  | 100 %        | 100 % (périmètre livré)        |
-=======
-| Métrique | Valeur cible | Valeur réelle |
-|---------|-------------|--------------|
-| Points engagés | 20 | 23 (ajouts en cours de sprint) |
-| Points livrés | ≥ 16 | 10 SP |
-| Vélocité | — | 10 SP |
-| Taux de couverture fuzzy (US 4) | > 60 % | — (non livré) |
-| Tests passants | 100 % | 100 % (périmètre livré) |
->>>>>>> 48e2171 (release: Sprint 1 (#39))
