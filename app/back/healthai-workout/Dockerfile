@@ -13,10 +13,11 @@ COPY pyproject.toml .
 RUN uv sync --no-dev
 
 COPY src/ ./src/
+COPY models/ ./models/
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
 EXPOSE 8002
 
-CMD ["uv", "run", "uvicorn", "src.server:app", "--host", "0.0.0.0", "--port", "8002"]
+CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8002"]
