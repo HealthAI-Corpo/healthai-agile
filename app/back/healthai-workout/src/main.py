@@ -1,6 +1,18 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
-app = FastAPI(title="HealthAI Workout Service")
+from src.database_mongo import mongo_db
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await mongo_db.connect()
+    yield
+    mongo_db.close()
+
+
+app = FastAPI(title="HealthAI Workout Service", lifespan=lifespan)
 
 
 @app.get("/")
@@ -10,5 +22,8 @@ async def root():
 
 @app.get("/health")
 async def health():
-    # Verification
-    return {"status": "online", "service": "healthai-workout"}
+    return {
+        "status": "online",
+        "service": "healthai-workout",
+        "mongodb_connected": mongo_db.db is not None,
+    }
