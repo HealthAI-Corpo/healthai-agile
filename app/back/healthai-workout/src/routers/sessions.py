@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_db
@@ -25,3 +26,15 @@ async def create_session(payload: SessionCreate, db: AsyncSession = Depends(get_
     await db.commit()
     await db.refresh(session)
     return session
+
+
+@router.delete("/{session_id}", status_code=204)
+async def delete_session(session_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Session).where(Session.id == session_id))
+    session = result.scalar_one_or_none()
+
+    if session is None:
+        raise HTTPException(status_code=404, detail="Séance introuvable")
+
+    await db.delete(session)
+    await db.commit()
