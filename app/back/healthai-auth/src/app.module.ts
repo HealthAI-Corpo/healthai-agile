@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Utilisateur } from './modules/users/utilisateur.entity';
+import { UsersModule } from './modules/users/users.module';
 import { ProfilSante } from './modules/profile/profil-sante.entity';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';

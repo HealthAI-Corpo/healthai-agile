@@ -10,7 +10,7 @@
 
 > Mettre en place la structure du projet et livrer les fondations : authentification, profil utilisateur et génération de séance IA avec matching fuzzy.
 
-*Critère de succès : Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le référentiel PostgreSQL.*
+_Critère de succès : Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le référentiel PostgreSQL._
 
 ---
 
@@ -65,6 +65,7 @@ Ne pas commencer #7 avant que #22 soit Done.
 ## Sprint Backlog — Tâches techniques
 
 ### #22 — Docker Compose + Ollama _(Jordan — PREMIÈRE TÂCHE)_
+
 - [ ] Ajouter service `ollama` dans `docker-compose.yml` (image `ollama/ollama`)
 - [ ] Volume `ollama_storage` pour persistance des modèles entre redémarrages
 - [ ] Script d'init : pull automatique `llama3.2:3b` au premier démarrage
@@ -73,24 +74,28 @@ Ne pas commencer #7 avant que #22 soit Done.
 - [ ] `OLLAMA_BASE_URL` + `OLLAMA_MODEL` dans `.env.example`
 
 ### #20 — Init BDD PostgreSQL _(Timéo — PREMIÈRE TÂCHE, parallèle à #22)_
+
 - [ ] Tables `users`, `profiles`, `sessions` dans `src/db/models.py` (SQLAlchemy async)
 - [ ] Connexion asyncpg via `DATABASE_URL`
 - [ ] Script de seed : 3 profils de test (débutant / intermédiaire / avancé)
 - [ ] `DATABASE_URL` dans `.env.example`
 
 ### #5 — US 1 : Auth JWT _(Eliott)_
+
 - [ ] `POST /auth/register` — hash bcrypt, retour JWT + expiration
 - [ ] `POST /auth/login` — vérification hash, retour JWT
 - [ ] Middleware `Depends(get_current_user)` sur routes protégées
 - [ ] Tests : inscription nominale, login mot de passe incorrect, token expiré
 
 ### #6 — US 2 : Profil sportif _(Wessim, après #20 Done)_
+
 - [ ] Modèle `Profile` : `niveau` (1–3), `objectif` (enum), `poids`, `bpm_repos`, `limitations` (list), `equipements` (list)
 - [ ] `POST /profile`, `GET /profile`, `PATCH /profile`
 - [ ] Validation Pydantic stricte (niveau 1–3, objectif enum valide, poids > 0)
 - [ ] Tests : création profil, modification partielle, profil inexistant (404)
 
 ### #7 — US 3 : Génération séance IA _(Timéo + Jordan, après #22 + #20 Done)_
+
 - [ ] Client Ollama async (HTTPX) avec timeout explicite 15 s
 - [ ] Prompt système : injecter `niveau`, `objectif`, `limitations`, `equipements`
 - [ ] Parser la réponse LLM → schéma Pydantic `SessionGeneree` (exercices, séries, reps, repos)
@@ -99,6 +104,7 @@ Ne pas commencer #7 avant que #22 soit Done.
 - [ ] Tests : génération nominale (mock Ollama), fallback activé (Ollama simulé KO)
 
 ### #8 — US 4 : Matching fuzzy exercices _(Timéo)_
+
 - [ ] Charger la table `exercice` depuis PostgreSQL (873 entrées)
 - [ ] Matching RapidFuzz : nom exercice LLM → nom `exercice` (seuil configurable)
 - [ ] `FUZZY_THRESHOLD` dans `.env` (défaut : 75)
@@ -126,6 +132,7 @@ Ne pas commencer #7 avant que #22 soit Done.
 ## Definition of Ready (DoR) — rappel
 
 Avant de commencer une issue :
+
 - [ ] Critères d'acceptation clairs et compris par le développeur
 - [ ] Dépendances disponibles (ex : BDD initialisée avant Profil)
 - [ ] Estimation validée en équipe
@@ -133,6 +140,7 @@ Avant de commencer une issue :
 ## Definition of Done (DoD) — rappel
 
 Une issue est Done quand :
+
 - [ ] `uv run ruff check .` passe sans erreur
 - [ ] `uv run pytest` passe (cas nominal + cas d'erreur)
 - [ ] PR liée à l'issue, validée par le PO
