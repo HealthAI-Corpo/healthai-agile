@@ -69,6 +69,47 @@ def validate_columns(df: pd.DataFrame, schema: dict) -> pd.DataFrame:
 
 
 # ============================================================================
+# 1B. CALCUL DE L'IMC (PHASE 6 MOD)
+# ============================================================================
+
+def compute_imc(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    PHASE 6 MOD: Calcule l'IMC à partir de poids_kg et taille_cm.
+    Formule: IMC = poids_kg / (taille_cm/100)²
+
+    Puis supprime les colonnes poids_kg et taille_cm.
+
+    Args:
+        df: DataFrame contenant poids_kg et taille_cm
+
+    Returns:
+        pd.DataFrame: DataFrame avec colonne imc et sans poids/taille
+    """
+    df = df.copy()
+
+    if "poids_kg" in df.columns and "taille_cm" in df.columns:
+        logger.info("📐 Calcul de l'IMC (poids / taille²)...")
+
+        # Vérifier qu'il n'y a pas de valeurs nulles
+        if df[["poids_kg", "taille_cm"]].isnull().any().any():
+            logger.error("❌ Valeurs nulles trouvées dans poids_kg ou taille_cm")
+            raise PreprocessingError("Impossible de calculer IMC avec des valeurs nulles")
+
+        # Calculer IMC = poids / (taille en mètres)²
+        taille_m = df["taille_cm"] / 100.0
+        df["imc"] = df["poids_kg"] / (taille_m ** 2)
+
+        # Supprimer les colonnes originales
+        df = df.drop(["poids_kg", "taille_cm"], axis=1)
+
+        logger.info(f"  ✅ IMC calculé : min={df['imc'].min():.2f}, max={df['imc'].max():.2f}, mean={df['imc'].mean():.2f}")
+        return df
+    else:
+        logger.warning("⚠️  poids_kg ou taille_cm manquants, IMC non calculé")
+        return df
+
+
+# ============================================================================
 # 2. GESTION DES VALEURS MANQUANTES
 # ============================================================================
 
@@ -317,16 +358,23 @@ def fit_transform(
         # 1. Validation des colonnes
         df = validate_columns(df, schema)
 
+        # 1B. PHASE 6 MOD: Calcul de l'IMC
+        df = compute_imc(df)
+
         # 2. Gestion des valeurs manquantes
         df = handle_missing_values(df)
 
         # 3. Encoding des variables catégoriques
         df, encoders = encode_categorical(df, categorical_mapping)
 
-        # 4. Mettre à jour features_cols (type_sport a été remplacé)
+        # 4. Mettre à jour features_cols (type_sport a été remplacé + PHASE 6: poids/taille → IMC)
         # On garde la liste originale, mais elle sera ajustée après le split
         features_cols_updated = [col for col in features_cols if col in df.columns]
-        
+
+        # PHASE 6 MOD: Ajouter 'imc' si présent et pas déjà dans la liste
+        if "imc" in df.columns and "imc" not in features_cols_updated:
+            features_cols_updated.insert(0, "imc")  # Insérer au début pour l'ordre cohérent
+
         # Ajouter les colonnes one-hot créées pour type_sport
         if encoders.get("type_sport", {}).get("method") == "onehot":
             onehot_cols = encoders["type_sport"]["columns"]
