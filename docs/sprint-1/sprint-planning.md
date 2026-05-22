@@ -12,24 +12,26 @@
 
 *Critère de succès : Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le référentiel PostgreSQL.*
 
+_Critère de succès : Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le référentiel PostgreSQL._
+
 ---
 
 ## Décision de scope
 
 Capacité estimée : **18–20 SP** (4 devs × demi-journée, Timéo multi-issues).
 
-| Issue | Titre | SP | Décision |
-|-------|-------|----|----------|
-| [#22](https://github.com/HealthAI-Corpo/healthai-agile/issues/22) | chore: Docker Compose + Ollama | 2 | **IN — BLOCKER** |
-| [#20](https://github.com/HealthAI-Corpo/healthai-agile/issues/20) | chore: init BDD PostgreSQL | 2 | **IN — BLOCKER** |
-| [#5](https://github.com/HealthAI-Corpo/healthai-agile/issues/5) | US 1 — Auth JWT | 3 | **IN** |
-| [#6](https://github.com/HealthAI-Corpo/healthai-agile/issues/6) | US 2 — Profil sportif | 3 | **IN** |
-| [#7](https://github.com/HealthAI-Corpo/healthai-agile/issues/7) | US 3 — Génération séance IA (Ollama) | 5 | **IN** |
-| [#8](https://github.com/HealthAI-Corpo/healthai-agile/issues/8) | US 4 — Matching fuzzy exercices | 3 | **IN** |
-| [#12](https://github.com/HealthAI-Corpo/healthai-agile/issues/12) | US 8 — Estimation des calories brûlées | 2 | **IN — tiré en avance** (Timéo, si #7 + #8 Done) |
-| [#23](https://github.com/HealthAI-Corpo/healthai-agile/issues/23) | chore: CI GitHub Actions | 1 | **Stretch** |
-| [#21](https://github.com/HealthAI-Corpo/healthai-agile/issues/21) | chore: init Next (UI) | 3 | **Reporté Sprint 2** — Swagger suffit pour la démo |
-| [#24](https://github.com/HealthAI-Corpo/healthai-agile/issues/24) | chore: Feature engineering | 3 | **Reporté Sprint 2** — prérequis de #25 (S2) |
+| Issue                                                             | Titre                                  | SP  | Décision                                           |
+| ----------------------------------------------------------------- | -------------------------------------- | --- | -------------------------------------------------- |
+| [#22](https://github.com/HealthAI-Corpo/healthai-agile/issues/22) | chore: Docker Compose + Ollama         | 2   | **IN — BLOCKER**                                   |
+| [#20](https://github.com/HealthAI-Corpo/healthai-agile/issues/20) | chore: init BDD PostgreSQL             | 2   | **IN — BLOCKER**                                   |
+| [#5](https://github.com/HealthAI-Corpo/healthai-agile/issues/5)   | US 1 — Auth JWT                        | 3   | **IN**                                             |
+| [#6](https://github.com/HealthAI-Corpo/healthai-agile/issues/6)   | US 2 — Profil sportif                  | 3   | **IN**                                             |
+| [#7](https://github.com/HealthAI-Corpo/healthai-agile/issues/7)   | US 3 — Génération séance IA (Ollama)   | 5   | **IN**                                             |
+| [#8](https://github.com/HealthAI-Corpo/healthai-agile/issues/8)   | US 4 — Matching fuzzy exercices        | 3   | **IN**                                             |
+| [#12](https://github.com/HealthAI-Corpo/healthai-agile/issues/12) | US 8 — Estimation des calories brûlées | 2   | **IN — tiré en avance** (Timéo, si #7 + #8 Done)   |
+| [#23](https://github.com/HealthAI-Corpo/healthai-agile/issues/23) | chore: CI GitHub Actions               | 1   | **Stretch**                                        |
+| [#21](https://github.com/HealthAI-Corpo/healthai-agile/issues/21) | chore: init Next (UI)                  | 3   | **Reporté Sprint 2** — Swagger suffit pour la démo |
+| [#24](https://github.com/HealthAI-Corpo/healthai-agile/issues/24) | chore: Feature engineering             | 3   | **Reporté Sprint 2** — prérequis de #25 (S2)       |
 
 **Total Sprint 1 retenu : 20 SP** (+ 1 SP stretch)
 
@@ -53,12 +55,12 @@ Ne pas commencer #7 avant que #22 soit Done.
 
 ## Répartition
 
-| Membre | Périmètre |
-|--------|-----------|
-| **Eliott** | US 1 — Auth JWT (#5) |
-| **Wessim** | US 2 — Profil sportif (#6) |
-| **Timéo** | #20 Init BDD (blocker) · US 3 Génération IA (#7) · US 4 Matching fuzzy (#8) · US 8 Calories (#12, si bande passante) |
-| **Jordan** | #22 Docker Compose + Ollama (blocker) · Infra / CI (#23 stretch) |
+| Membre     | Périmètre                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Eliott** | US 1 — Auth JWT (#5)                                                                                                 |
+| **Wessim** | US 2 — Profil sportif (#6)                                                                                           |
+| **Timéo**  | #20 Init BDD (blocker) · US 3 Génération IA (#7) · US 4 Matching fuzzy (#8) · US 8 Calories (#12, si bande passante) |
+| **Jordan** | #22 Docker Compose + Ollama (blocker) · Infra / CI (#23 stretch)                                                     |
 
 ---
 
@@ -126,6 +128,7 @@ Ne pas commencer #7 avant que #22 soit Done.
 ## Definition of Ready (DoR) — rappel
 
 Avant de commencer une issue :
+
 - [ ] Critères d'acceptation clairs et compris par le développeur
 - [ ] Dépendances disponibles (ex : BDD initialisée avant Profil)
 - [ ] Estimation validée en équipe
@@ -133,6 +136,7 @@ Avant de commencer une issue :
 ## Definition of Done (DoD) — rappel
 
 Une issue est Done quand :
+
 - [ ] `uv run ruff check .` passe sans erreur
 - [ ] `uv run pytest` passe (cas nominal + cas d'erreur)
 - [ ] PR liée à l'issue, validée par le PO
