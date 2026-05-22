@@ -25,6 +25,30 @@ services:
       - healthai-net
 
   # ============================================================
+  # Authentification - Service de gestion des utilisateurs et de l'authentification
+  # ============================================================
+
+  healthai-auth:
+    build: ./back/healthai-auth
+    container_name: healthai-auth
+    ports:
+      - "${AUTH_PORT:-3000}:3000"
+    env_file:
+      - ./back/healthai-auth/.env
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=${POSTGRES_USER:-healthai}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD:-healthai_secure_pwd}
+      - DATABASE_NAME=${POSTGRES_DB:-healthai}
+      - JWT_SECRET=${JWT_SECRET:-change_me_in_prod}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - healthai-net
+
+  # ============================================================
   # NOSQL DATABASE - MongoDB
   # ============================================================
   mongo:
@@ -182,7 +206,7 @@ services:
     ports:
       - "${FRONT_PORT:-3001}:3001"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - NEXT_PUBLIC_API_URL=http://healthai-auth:3000
     volumes:
       - ./front/src:/app/src
     networks:
