@@ -16,17 +16,23 @@ VALID_PAYLOAD = {
 }
 
 
-def make_mock_db():
-    mock_session = MagicMock()
-    mock_session.add = MagicMock()
-    mock_session.commit = AsyncMock()
+def make_mock_db(existing_session=None):
+    mock_db = MagicMock()
+    mock_db.add = MagicMock()
+    mock_db.commit = AsyncMock()
+    mock_db.delete = AsyncMock()
 
     def fake_refresh(obj):
         obj.id = 1
         obj.timestamp = datetime(2026, 5, 22, 11, 0, 0)
 
-    mock_session.refresh = AsyncMock(side_effect=fake_refresh)
-    return mock_session
+    mock_db.refresh = AsyncMock(side_effect=fake_refresh)
+
+    mock_result = MagicMock()
+    mock_result.scalar_one_or_none.return_value = existing_session
+    mock_db.execute = AsyncMock(return_value=mock_result)
+
+    return mock_db
 
 
 @pytest.fixture(autouse=True)
@@ -82,3 +88,25 @@ def test_create_session_with_recommendation_id(client):
 
     assert response.status_code == 201
     assert response.json()["recommendation_id"] == "507f1f77bcf86cd799439011"
+
+
+def test_delete_session_success(client):
+    mock_session = MagicMock()
+    mock_session.id = 1
+
+    async def _get_db_with_session():
+        yield make_mock_db(existing_session=mock_session)
+
+    app.dependency_overrides[get_db] = _get_db_with_session
+    response = client.delete("/sessions/1")
+    assert response.status_code == 204
+
+
+def test_delete_session_not_found(client):
+    async def _get_db_empty():
+        yield make_mock_db(existing_session=None)
+
+    app.dependency_overrides[get_db] = _get_db_empty
+    response = client.delete("/sessions/99")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Séance introuvable"
