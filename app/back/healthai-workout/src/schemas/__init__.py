@@ -40,7 +40,6 @@ class CalorieEstimationRequest(BaseModel):
 class CalorieEstimationResponse(BaseModel):
     """Modèle de réponse pour prédiction"""
     prediction: float = Field(..., description="Calories brûlées estimées")
-    confidence: float = Field(..., ge=0, le=1, description="Confiance du modèle (0-1)")
     model_version: str = Field(default="1.0.0", description="Version du modèle")
     features_used: int = Field(default=11, description="Nombre de features utilisées")
     model_name: str = Field(default="CaloriesIA_1_0_0", description="Nom du modèle")
