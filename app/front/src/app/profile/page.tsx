@@ -248,3 +248,33 @@ function Field({
     </div>
   )
 }
+<<<<<<< HEAD
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+
+const inputCls = 'w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500'
+
+function Field({
+  label,
+  required,
+  optional,
+  children,
+}: {
+  label: string
+  required?: boolean
+  optional?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <div>
+      <label className="block text-sm font-medium mb-1">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+        {optional && <span className="text-gray-400 ml-1 font-normal text-xs">(optionnel)</span>}
+      </label>
+      {children}
+    </div>
+  )
+}
+=======
+>>>>>>> 55aa38e4f422ca19bd8ad13dd600cff27556de37

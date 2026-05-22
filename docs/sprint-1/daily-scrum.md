@@ -11,6 +11,7 @@
 
 ### État du Sprint Backlog
 
+<<<<<<< HEAD
 | Issue                                                             | Titre                          | À faire | En cours | Fait | DEV            |
 | ----------------------------------------------------------------- | ------------------------------ | :-----: | :------: | :--: | -------------- |
 | [#22](https://github.com/HealthAI-Corpo/healthai-agile/issues/22) | chore: Docker Compose + Ollama |    X    |          |      | Jordan         |
@@ -20,6 +21,17 @@
 | [#7](https://github.com/HealthAI-Corpo/healthai-agile/issues/7)   | US 3 — Génération séance IA    |    X    |          |      | Timéo + Jordan |
 | [#8](https://github.com/HealthAI-Corpo/healthai-agile/issues/8)   | US 4 — Matching fuzzy          |    X    |          |      | Timéo          |
 | [#12](https://github.com/HealthAI-Corpo/healthai-agile/issues/12) | US 8 — Estimation calories     |    X    |          |      | Timéo          |
+=======
+| Issue | Titre | À faire | En cours | Fait | DEV |
+|-------|-------|:-------:|:--------:|:----:|-----|
+| [#22](https://github.com/HealthAI-Corpo/healthai-agile/issues/22) | chore: Docker Compose + Ollama | X | | | Jordan |
+| [#20](https://github.com/HealthAI-Corpo/healthai-agile/issues/20) | chore: init BDD PostgreSQL | X | | | Timéo |
+| [#5](https://github.com/HealthAI-Corpo/healthai-agile/issues/5) | US 1 — Auth JWT | X | | | Eliott |
+| [#6](https://github.com/HealthAI-Corpo/healthai-agile/issues/6) | US 2 — Profil sportif | X | | | Wessim |
+| [#7](https://github.com/HealthAI-Corpo/healthai-agile/issues/7) | US 3 — Génération séance IA | X | | | Timéo + Jordan |
+| [#8](https://github.com/HealthAI-Corpo/healthai-agile/issues/8) | US 4 — Matching fuzzy | X | | | Timéo |
+| [#12](https://github.com/HealthAI-Corpo/healthai-agile/issues/12) | US 8 — Estimation calories | X | | | Timéo |
+>>>>>>> 48e2171 (release: Sprint 1 (#39))
 
 ### Loric (PO)
 
@@ -55,10 +67,17 @@
 
 ## Blocages identifiés
 
+<<<<<<< HEAD
 | Blocage                            | Qui    | Action SM                                              |
 | ---------------------------------- | ------ | ------------------------------------------------------ |
 | #6 Profil bloqué sur #20 BDD       | Wessim | Jordan monitore l'avancement #20, escalade si > 30 min |
 | #7 Génération bloqué sur #20 + #22 | Timéo  | Jordan traite #22 en priorité absolue                  |
+=======
+| Blocage | Qui | Action SM |
+|---------|-----|-----------|
+| #6 Profil bloqué sur #20 BDD | Wessim | Jordan monitore l'avancement #20, escalade si > 30 min |
+| #7 Génération bloqué sur #20 + #22 | Timéo | Jordan traite #22 en priorité absolue |
+>>>>>>> 48e2171 (release: Sprint 1 (#39))
 
 > Blocages à traiter immédiatement après le daily — ne pas laisser quelqu'un bloqué plus de 30 min sans escalade.
 
@@ -66,7 +85,14 @@
 
 ## Prochains dailys
 
+<<<<<<< HEAD
 | Daily | Date          | Notes |
 | ----- | ------------- | ----- |
 | #2    | _à planifier_ |       |
 | #3    | _à planifier_ |       |
+=======
+| Daily | Date | Notes |
+|-------|------|-------|
+| #2 | _à planifier_ | |
+| #3 | _à planifier_ | |
+>>>>>>> 48e2171 (release: Sprint 1 (#39))

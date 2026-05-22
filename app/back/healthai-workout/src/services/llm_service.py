@@ -4,7 +4,7 @@ import httpx
 from typing import Dict, Any
 
 # Variables d'environnement avec les fallbacks calés sur ton docker-compose
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://healthai-ollama-workout:11434")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:0.5b")
 
 async def generate_llm_prediction(system_prompt: str, user_prompt: str) -> Dict[str, Any]:

@@ -11,12 +11,12 @@ from src.models.session import Session
 from src.schemas.session import AIWorkoutResponse, SessionCreate, SessionResponse
 from src.services.user_service import verify_user_exists
 from src.services.llm_service import generate_llm_prediction
-from src.services.workout_generation import generate_ai_workout_session
+#from src.services.workout_generation import generate_ai_workout_session
 
 # ============================================================
 # 🤖 CONFIGURATION ET LOGIQUE LLM LOCAL (OLLAMA)
 # ============================================================
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://healthai-ollama-workout:11434")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:0.5b")
 
 async def generate_llm_prediction(system_prompt: str, user_prompt: str) -> Dict[str, Any]:
