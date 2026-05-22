@@ -192,36 +192,30 @@ def encode_categorical(df: pd.DataFrame, categorical_mapping: dict) -> tuple:
         encoders_used["sexe"] = sexe_mapping
         logger.info(f"  ✅ Sexe encodé : {len(df)} lignes conservées")
 
-    # TYPE_SPORT : One-Hot Encoding
+    # TYPE_SPORT : PHASE 6 MOD - Mapping simple (0/1) comme le sexe
     if "type_sport" in df.columns:
-        logger.info("  📊 Type_Sport: One-Hot Encoding (colonne binaire par sport)")
-        
-        # Obtenir les valeurs uniques
-        unique_sports = df["type_sport"].dropna().unique()
-        logger.info(f"    Sports détectés : {sorted(unique_sports)}")
-        
-        # One-Hot Encoding
-        sport_encoded = pd.get_dummies(
-            df["type_sport"],
-            prefix="sport",
-            drop_first=False,
-            dtype=int
-        )
-        
-        # Ajouter les colonnes au DataFrame
-        df = pd.concat([df, sport_encoded], axis=1)
-        
-        # Supprimer la colonne originale
-        df = df.drop("type_sport", axis=1)
-        
-        # Enregistrer les sports créés
-        encoders_used["type_sport"] = {
-            "method": "onehot",
-            "sports": sorted(unique_sports),
-            "columns": sport_encoded.columns.tolist()
-        }
-        
-        logger.info(f"  ✅ One-Hot Encoding : {len(sport_encoded.columns)} colonnes créées")
+        logger.info("  📊 Type_Sport: Mapping simple (0=Cardio/HIIT, 1=Strength/Yoga)")
+
+        sport_mapping = categorical_mapping.get("type_sport", {})
+
+        # Appliquer le mapping
+        df["type_sport"] = df["type_sport"].map(sport_mapping)
+
+        # Vérifier les valeurs inconnues
+        invalid_count = df["type_sport"].isnull().sum()
+        if invalid_count > 0:
+            logger.error(f"❌ {invalid_count} valeurs invalides pour 'type_sport' détectées et supprimées")
+            df = df[df["type_sport"].notna()]
+
+        # Vérifier qu'il n'y a que des 0 et 1
+        unique_values = df["type_sport"].unique()
+        if not set(unique_values).issubset({0, 1}):
+            error_msg = f"Type_sport contient des valeurs invalides après mapping : {unique_values}"
+            logger.error(f"❌ {error_msg}")
+            raise PreprocessingError(error_msg)
+
+        encoders_used["type_sport"] = sport_mapping
+        logger.info(f"  ✅ Type_sport encodé (0=Cardio, 1=Force) : {len(df)} lignes conservées")
 
     logger.info(f"✅ {len(encoders_used)} colonnes catégoriques encodées")
     return df, encoders_used

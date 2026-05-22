@@ -57,8 +57,14 @@ CATEGORICAL_COLS = {
         "M": 0, "m": 0, "male": 0, "Male": 0,
         "F": 1, "f": 1, "female": 1, "Female": 1,
     },
-    # type_sport : sera encodé en one-hot (chaque sport = colonne binaire)
-    "type_sport": "onehot",
+    # PHASE 6 MOD: Sport encodé comme sexe (mapping simple 0/1)
+    # Au lieu de one-hot (2 colonnes), une seule colonne: 0=Cardio, 1=Force
+    # Cardio: Cardio + HIIT (effort cardio-vasculaire)
+    # Force: Strength + Yoga (effort musculaire/flexibilité)
+    "type_sport": {
+        "Cardio": 0, "HIIT": 0,
+        "Strength": 1, "Yoga": 1,
+    },
 }
 
 # ============================================================================
