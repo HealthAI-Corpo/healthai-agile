@@ -1,100 +1,85 @@
 # Sprint Planning — Sprint 3
 
-**Date :** _à compléter le jour de la séance_
-**Durée du sprint :** 1 demi-journée
-**Participants :** Loric (PO), Jordan (SM), Eliott, Timéo, Wessim
+**Date :** 22/05/2026  
+**Durée du sprint :** 1 demi-journée  
+**Participants :** Loric (PO), Jordan (SM + Dev), Timéo, Wessim, Eliott
 
 ---
 
 ## Sprint Goal
 
-> L'estimation calorique ML est opérationnelle (MAE < 50 kcal), l'historique est consultable et supprimable, et le taux de couverture fuzzy est exposé.
+> Débloquer le pipeline IA end-to-end (génération Ollama + fuzzy matching), brancher le frontend sur le backend (auth + séances), et livrer l'estimation calorique.
 
 ---
 
 ## Prérequis Sprint 3
 
-Sprint 3 dépend de Sprint 2 Done. Vérifier avant de démarrer :
-
-- [ ] #25 — RF classifier validé (F1 > 0.65) et intégré dans le prompt Ollama
-- [ ] #26 — `docs/ml_report_v1.md` versionné
-- [ ] #28 — MongoDB opérationnel
-- [ ] #9 — `POST /sessions` fonctionnel
+- [x] #22 — Docker Compose + Ollama — résolu (PR #43)
+- [x] #28 — MongoDB Motor opérationnel
+- [x] #9 — `POST /sessions` fonctionnel
+- [x] #13 — `DELETE /sessions/{id}` fonctionnel
 
 ---
 
-## Décision de scope
+## Scope retenu
 
-Capacité estimée : **12–14 SP** (4 devs × demi-journée).
-
-| Issue | Titre | SP | Décision |
-|-------|-------|----|----------|
-| [#18](https://github.com/HealthAI-Corpo/healthai-agile/issues/18) | US ML-cal — Modèle prédiction calories | 5 | **IN — P1** |
-| [#12](https://github.com/HealthAI-Corpo/healthai-agile/issues/12) | US 8 — Estimation calories brûlées | 2 | **IN — P1** |
-| [#10](https://github.com/HealthAI-Corpo/healthai-agile/issues/10) | US 6 — Historique séances | 2 | **IN** |
-| [#13](https://github.com/HealthAI-Corpo/healthai-agile/issues/13) | US 11 — Supprimer séance | 1 | **IN** |
-| [#11](https://github.com/HealthAI-Corpo/healthai-agile/issues/11) | US 7 — Taux couverture (PO) | 2 | **IN** |
-| [#14](https://github.com/HealthAI-Corpo/healthai-agile/issues/14) | US 9 — Simulation IA (modifier séance) | 5 | **Stretch** |
-| [#17](https://github.com/HealthAI-Corpo/healthai-agile/issues/17) | US 10 — Supervision IA historique | 5 | **Post-POC** |
-| [#15](https://github.com/HealthAI-Corpo/healthai-agile/issues/15) | US 13 — Évolution BPM/calories | 3 | **Post-POC** |
-| [#16](https://github.com/HealthAI-Corpo/healthai-agile/issues/16) | US 12 — Statistiques globales | 2 | **Post-POC** |
-
-**Total Sprint 3 retenu : 12 SP** (+ 5 SP stretch)
+| Issue | Titre | Assigné | Statut | Dépend de |
+|-------|-------|---------|--------|-----------|
+| [#7](https://github.com/HealthAI-Corpo/healthai-agile/issues/7) | US 3 — Générer une séance via l'IA | Timéo / Jordan | À faire | #22 ✅ |
+| [#8](https://github.com/HealthAI-Corpo/healthai-agile/issues/8) | US 4 — Matching fuzzy exercices | Timéo | À faire | #7 |
+| [#12](https://github.com/HealthAI-Corpo/healthai-agile/issues/12) | US 8 — Estimation calories brûlées | Timéo | À faire | #7 + #8 |
+| [#10](https://github.com/HealthAI-Corpo/healthai-agile/issues/10) | Front — Page Séance + CRUD + intégration API | Wessim | À faire | #9 ✅, #13 ✅ |
+| [#46](https://github.com/HealthAI-Corpo/healthai-agile/issues/46) | Front — Intégration auth (login / register) | Eliott | À faire | #5 ✅ |
 
 ---
 
-## Ordre de démarrage
+## Chaîne de dépendances
 
 ```
-#18 (modèle calories — train) ──────────────────► #12 (endpoint estimation)
-#10 (historique) ──────────────────────────────── indépendant
-#13 (supprimer) ──────────────── dépend #10
-#11 (taux couverture) ──────────────────────────── indépendant
-#14 simulation IA (stretch) ──── indépendant
+#7 (génération IA) ──────────────────────────────► #8 (fuzzy matching) ──► #12 (calories)
+Front Page Séance ──► CRUD afficher ──► CRUD enregistrer/modifier
+                  └──► CRUD supprimer
+                  └──► Intégration front ↔ back Séance (Wessim)
+Intégration auth (Eliott) ── indépendant
 ```
-
----
-
-## Répartition
-
-_À définir lors de la séance par le SM — respecter l'ordre de démarrage ci-dessus. Note : #18 et #12 sont couplés, les confier à la même personne._
 
 ---
 
 ## Sprint Backlog — Tâches techniques
 
-### #18 — US ML-cal : Modèle prédiction calories _(Timéo)_
-- [ ] `src/ml/train_calories.py` : features = `poids`, `age`, `bpm_moyen`, `duree_min`, `type_seance_encoded`, `intensite_encoded`
-- [ ] Algorithme : `DecisionTreeRegressor` (ou `RandomForestRegressor` si MAE > 50 kcal)
-- [ ] Métriques : **MAE < 50 kcal** + R² sur test set (seuil de validation PO)
-- [ ] Sérialisation `models/calories_v1.joblib`
-- [ ] Rapport `docs/ml_report_calories.md` : MAE, R², feature importance (obligatoire soutenance)
+### [#7] — US 3 : Générer une séance via l'IA _(Timéo / Jordan)_
+- [ ] `POST /sessions/generate` — appel Ollama avec le profil utilisateur (poids, âge, objectif, contraintes)
+- [ ] Prompt structuré : exercices, séries, répétitions, intensité
+- [ ] Retourner la séance générée au format JSON
+- [ ] Tests : génération nominale, profil invalide (400), Ollama injoignable (503 gracieux)
 
-### #12 — US 8 : Estimation calories _(Timéo, après #18 Done)_
-- [ ] Chargement singleton `calories_v1.joblib` au démarrage
-- [ ] Intégration dans `POST /sessions` : calcul automatique à l'enregistrement
-- [ ] `GET /sessions/{id}/calories` — retourne `calories_estimees` + `confidence_range` (±MAE)
-- [ ] Tests : estimation cohérente pour profils connus (vérifier ordre de grandeur)
+### [#8] — US 4 : Matching fuzzy exercices _(Timéo, après #7 Done)_
+- [ ] Charger le référentiel d'exercices depuis PostgreSQL
+- [ ] Fuzzy-matching (RapidFuzz) des exercices LLM → référentiel (seuil configurable)
+- [ ] Stocker le taux de couverture par séance dans MongoDB (`session_metrics`)
+- [ ] Tests : exercice connu (match > seuil), exercice inconnu (non matché), couverture calculée
 
-### #10 — US 6 : Historique séances _(Eliott)_
-- [ ] `GET /sessions` — liste paginée (`limit`/`offset`), filtrée par `user_id` JWT
-- [ ] `GET /sessions/{id}` — détail complet + estimation calories
-- [ ] Tests : liste vide, liste avec données, session inexistante (404)
+### [#12] — US 8 : Estimation des calories brûlées _(Timéo, après #7 + #8 Done)_
+- [ ] Modèle calories (`models/calories_v1.joblib`) — features : poids, âge, bpm_moyen, durée, type, intensité
+- [ ] Intégration dans `POST /sessions/generate` : calcul automatique à l'enregistrement
+- [ ] `GET /sessions/{id}/calories` — retourne `calories_estimees` + `confidence_range`
+- [ ] Rapport `docs/ml_report_calories.md` : MAE, R², feature importance
+- [ ] Tests : estimation cohérente pour profils connus
 
-### #13 — US 11 : Supprimer séance _(Eliott, après #10 Done)_
-- [ ] `DELETE /sessions/{id}` — suppression PostgreSQL + nettoyage référence MongoDB
-- [ ] Vérification ownership : seul le propriétaire peut supprimer (403 sinon)
-- [ ] Tests : suppression nominale, tentative autre utilisateur (403), session inexistante (404)
+### [#10] — Front Séances : page + CRUD + intégration API _(Wessim)_
+- [ ] Page `/seances` — liste avec composant `SeanceCard` (date, type, exercices, calories si dispo)
+- [ ] Page `/seances/[id]` — détail complet de la séance
+- [ ] Formulaire enregistrement d'une séance (appel `POST /sessions`)
+- [ ] Bouton suppression avec confirmation (appel `DELETE /sessions/{id}`)
+- [ ] Hooks/services API : `getSessions()`, `getSession(id)`, `createSession()`, `deleteSession(id)`
+- [ ] URL back configurable via `.env.local`, JWT transmis dans les requêtes
+- [ ] Gestion des états chargement / erreur / vide
 
-### #11 — US 7 : Taux de couverture PO _(Jordan)_
-- [ ] `GET /metrics/matching-coverage` — taux global + par session (% exercices LLM matchés > seuil fuzzy)
-- [ ] Persisté dans la collection MongoDB `session_metrics` à chaque génération
-- [ ] Tests : calcul correct sur sessions connues
-
-### #14 — US 9 : Simulation IA (stretch) _(Wessim)_
-- [ ] `PATCH /sessions/{id}/simulate` — modifier un exercice et demander à Ollama l'impact estimé
-- [ ] Retourner l'impact différentiel (calories, muscles couverts) sans persister la modification
-- [ ] Tests : simulation sur session valide, exercice inconnu (gracieux)
+### [#46] — Intégration auth front ↔ back _(Eliott)_
+- [ ] Page `/login` branchée sur `POST /auth/login` — stockage JWT
+- [ ] Page `/register` branchée sur `POST /auth/register`
+- [ ] Route guard — rediriger vers `/login` si non authentifié
+- [ ] Déconnexion (suppression token + redirection)
 
 ---
 
@@ -102,16 +87,18 @@ _À définir lors de la séance par le SM — respecter l'ordre de démarrage ci
 
 | Critère | Seuil | Issue |
 |---------|-------|-------|
-| Taux de couverture fuzzy | > 60 % | #11 |
-| F1-score macro classifier muscles/intensité | > 0.65 | #26 |
-| MAE modèle calories | < 50 kcal | #18 |
+| Taux de couverture fuzzy | > 60 % | #8 |
+| MAE modèle calories | < 50 kcal | #12 |
 | Latence génération séance Ollama | < 10 s | #7 |
-| Contraintes utilisateur respectées | 100 % des séances | #7 + #25 |
+| Contraintes utilisateur respectées | 100 % des séances | #7 |
+| Scénario démo complet sans erreur | — | intégration |
 
 ---
 
 ## Definition of Done — rappel
 
-Idem Sprints 1 & 2, avec obligation supplémentaire :
-- [ ] `docs/ml_report_calories.md` créé et versionné avant fusion de #18
-- [ ] Scénario de démo complet jouable sans erreur (`register → login → profil → generate → historique`)
+- [ ] Code `ruff` propre (`uv run ruff check .`)
+- [ ] Tests unitaires passent (`uv run pytest`) — cas nominal + cas d'erreur
+- [ ] PR liée à l'issue, validée par le PO
+- [ ] Fusionnée via Squash and Merge dans `develop`
+- [ ] `docs/ml_report_calories.md` créé et versionné avant fusion de #12

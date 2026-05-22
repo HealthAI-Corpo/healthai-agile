@@ -16,7 +16,19 @@ VALID_PAYLOAD = {
 }
 
 
-def make_mock_db(existing_session=None):
+def make_mock_session(id=1, user_id=1):
+    s = MagicMock()
+    s.id = id
+    s.user_id = user_id
+    s.exercices = [{"nom": "Squat", "series": 3, "repetitions": 10, "repos_sec": 60}]
+    s.calories_estimees = None
+    s.duree_min = 45
+    s.timestamp = datetime(2026, 5, 22, 11, 0, 0)
+    s.recommendation_id = None
+    return s
+
+
+def make_mock_db(existing_session=None, session_list=None):
     mock_db = MagicMock()
     mock_db.add = MagicMock()
     mock_db.commit = AsyncMock()
@@ -30,6 +42,9 @@ def make_mock_db(existing_session=None):
 
     mock_result = MagicMock()
     mock_result.scalar_one_or_none.return_value = existing_session
+    mock_scalars = MagicMock()
+    mock_scalars.all.return_value = session_list if session_list is not None else []
+    mock_result.scalars.return_value = mock_scalars
     mock_db.execute = AsyncMock(return_value=mock_result)
 
     return mock_db
@@ -108,5 +123,54 @@ def test_delete_session_not_found(client):
 
     app.dependency_overrides[get_db] = _get_db_empty
     response = client.delete("/sessions/99")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Séance introuvable"
+
+
+def test_list_sessions_success(client):
+    sessions = [make_mock_session(id=2), make_mock_session(id=1)]
+
+    async def _get_db():
+        yield make_mock_db(session_list=sessions)
+
+    app.dependency_overrides[get_db] = _get_db
+    response = client.get("/sessions?user_id=1")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 2
+    assert data[0]["id"] == 2
+
+
+def test_list_sessions_empty(client):
+    async def _get_db():
+        yield make_mock_db(session_list=[])
+
+    app.dependency_overrides[get_db] = _get_db
+    response = client.get("/sessions?user_id=1")
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+def test_list_sessions_missing_user_id(client):
+    response = client.get("/sessions")
+    assert response.status_code == 422
+
+
+def test_get_session_success(client):
+    async def _get_db():
+        yield make_mock_db(existing_session=make_mock_session(id=1))
+
+    app.dependency_overrides[get_db] = _get_db
+    response = client.get("/sessions/1")
+    assert response.status_code == 200
+    assert response.json()["id"] == 1
+
+
+def test_get_session_not_found(client):
+    async def _get_db():
+        yield make_mock_db(existing_session=None)
+
+    app.dependency_overrides[get_db] = _get_db
+    response = client.get("/sessions/99")
     assert response.status_code == 404
     assert response.json()["detail"] == "Séance introuvable"

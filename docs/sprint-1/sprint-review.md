@@ -8,7 +8,7 @@
 
 ## Sprint Goal
 
-> Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le dataset de référence.
+> Mettre en place la structure du projet et livrer les fondations : authentification, profil utilisateur et génération de séance IA avec matching fuzzy.
 
 **Sprint Goal atteint ?** Partiellement — Les fondations techniques sont livrées (BDD, Docker, Auth, UI). Les US métier profil, génération IA et matching n'ont pas été terminées.
 
