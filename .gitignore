@@ -13,6 +13,8 @@ eggs/
 .eggs/
 lib/
 lib64/
+# Exception : code source frontend
+!app/front/src/lib/
 parts/
 sdist/
 var/
@@ -38,6 +40,7 @@ ENV/
 .DS_Store
 Thumbs.db
 
+/app/back/healthai-training-ia-calories-estimation/data/models/
 # Dependencies
 node_modules/
 .pnp
@@ -84,3 +87,5 @@ coverage/
 
 # Prisma generated
 apps/api/src/generated/
+
+/app/back/healthai-training-ia-calories-estimation/data/models/*

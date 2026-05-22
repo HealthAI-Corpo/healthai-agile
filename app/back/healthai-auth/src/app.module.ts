@@ -20,7 +20,6 @@ import { AuthModule } from './modules/auth/auth.module';
         password: config.get('DATABASE_PASSWORD', 'postgres'),
         database: config.get('DATABASE_NAME', 'healthai'),
         entities: [Utilisateur],
-        // synchronize: false — la BDD existe déjà via le schéma SQL fourni
         synchronize: false,
       }),
     }),

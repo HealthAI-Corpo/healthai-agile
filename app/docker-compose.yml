@@ -25,6 +25,30 @@ services:
       - healthai-net
 
   # ============================================================
+  # Authentification - Service de gestion des utilisateurs et de l'authentification
+  # ============================================================
+
+  healthai-auth:
+    build: ./back/healthai-auth
+    container_name: healthai-auth
+    ports:
+      - "${AUTH_PORT:-3000}:3000"
+    env_file:
+      - ./back/healthai-auth/.env
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=${POSTGRES_USER:-healthai}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD:-healthai_secure_pwd}
+      - DATABASE_NAME=${POSTGRES_DB:-healthai}
+      - JWT_SECRET=${JWT_SECRET:-change_me_in_prod}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - healthai-net
+
+  # ============================================================
   # NOSQL DATABASE - MongoDB
   # ============================================================
   mongo:
@@ -174,6 +198,43 @@ services:
       "
 
   # ============================================================
+  # INTELLIGENCE ARTIFICIELLE - Ollama Serveur
+  # ============================================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: healthai-ollama-workout
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-storage:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h # Maintient le modèle chaud en RAM sur CPU
+    networks:
+      - healthai-net
+    restart: unless-stopped
+
+  # ============================================================
+  # SCRIPT DE PRÉCHARGEMENT AUTOMATIQUE DU MODELE
+  # ============================================================
+  ollama-pull-model:
+    image: curlimages/curl:latest
+    container_name: healthai-workout-ollama-pull
+    networks:
+      - healthai-net
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:0.5b}
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Attente du démarrage d Ollama...';
+      while ! curl -s http://ollama:11434/api/tags > /dev/null; do sleep 2; done;
+      echo 'Ollama est prêt. Téléchargement automatique du modèle '$$OLLAMA_MODEL'...';
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"'$$OLLAMA_MODEL'\"}';
+      echo '\nModèle '$$OLLAMA_MODEL' installé avec succès !';
+      "
+
+  # ============================================================
   # FRONTEND — Next.js (US 21)
   # ============================================================
   healthai-front:
@@ -182,7 +243,7 @@ services:
     ports:
       - "${FRONT_PORT:-3001}:3001"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - NEXT_PUBLIC_API_URL=http://healthai-auth:3000
     volumes:
       - ./front/src:/app/src
     networks:

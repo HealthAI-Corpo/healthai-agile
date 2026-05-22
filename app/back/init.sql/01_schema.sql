@@ -36,7 +36,12 @@ CREATE TABLE profil_sante (
     allergies                  TEXT,
     objectif_principal         VARCHAR(200),
     experience_sportive        VARCHAR(100),
-    frequence_entrainement     INTEGER
+    frequence_entrainement     INTEGER,
+    equipement_disponible      TEXT,
+    hr_rest                    INTEGER,
+    hr_max                     INTEGER,
+    hr_avg                     INTEGER,
+    body_fat_pct               NUMERIC(5, 2)
 );
 CREATE INDEX ix_profil_sante_id_profil ON profil_sante (id_profil);
 
