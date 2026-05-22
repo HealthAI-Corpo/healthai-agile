@@ -28,8 +28,9 @@ CSV_FILE = DATA_RAW_DIR / "dataset_historique_seance_exercice.20260519.csv"
 SCHEMA = {
     "age": "int64",
     "sexe": "str",                          # M, F
-    "poids_kg": "float64",
-    "taille_cm": "int64",
+    # PHASE 6 MOD: Fusion poids + taille → IMC
+    "poids_kg": "float64",                  # Transformé en IMC
+    "taille_cm": "int64",                   # Transformé en IMC
     "bpm_max": "int64",
     "bpm_moyen": "int64",
     "bpm_repos": "int64",
