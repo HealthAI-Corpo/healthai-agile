@@ -22,10 +22,7 @@ MODEL = None
 SCALER = None
 METADATA = None
 
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://healthai-ollama-workout:11434")
-
-# Configuration de l'URL Ollama locale (pointe sur ton conteneur workout)
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://healthai-ollama-workout:11434")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")                                                                    
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

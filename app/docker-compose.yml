@@ -192,9 +192,9 @@ services:
     entrypoint: >
       /bin/sh -c "
       echo 'Attente du démarrage d Ollama...';
-      while ! curl -s http://healthai-ollama:11434/api/tags > /dev/null; do sleep 2; done;
+      while ! curl -s http://ollama:11434/api/tags > /dev/null; do sleep 2; done;
       echo 'Ollama est prêt. Téléchargement automatique du modèle '$$OLLAMA_MODEL'...';
-      curl -X POST http://healthai-ollama:11434/api/pull -d '{\"name\": \"'$$OLLAMA_MODEL'\"}';
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"'$$OLLAMA_MODEL'\"}';
       echo '\nModèle '$$OLLAMA_MODEL' installé avec succès !';
       "
 
