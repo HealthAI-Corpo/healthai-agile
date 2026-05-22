@@ -1,6 +1,6 @@
 # Sprint Planning — Sprint 1
 
-**Date :** _à compléter le jour de la séance_
+**Date :** 21/05/2026
 **Durée du sprint :** 1 demi-journée
 **Participants :** Loric (PO), Jordan (SM), Eliott, Timéo, Wessim
 
@@ -10,25 +10,28 @@
 
 > Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le référentiel PostgreSQL.
 
+_Critère de succès : Un utilisateur peut s'inscrire, renseigner son profil sportif et recevoir une séance d'entraînement générée par Ollama, dont les exercices sont validés contre le référentiel PostgreSQL._
+
 ---
 
 ## Décision de scope
 
-Capacité estimée : **16–18 SP** (4 devs × demi-journée).
+Capacité estimée : **18–20 SP** (4 devs × demi-journée, Timéo multi-issues).
 
-| Issue | Titre | SP | Décision |
-|-------|-------|----|----------|
-| [#22](https://github.com/HealthAI-Corpo/healthai-agile/issues/22) | chore: Docker Compose + Ollama | 2 | **IN — BLOCKER** |
-| [#20](https://github.com/HealthAI-Corpo/healthai-agile/issues/20) | chore: init BDD PostgreSQL | 2 | **IN — BLOCKER** |
-| [#5](https://github.com/HealthAI-Corpo/healthai-agile/issues/5) | US 1 — Auth JWT | 3 | **IN** |
-| [#6](https://github.com/HealthAI-Corpo/healthai-agile/issues/6) | US 2 — Profil sportif | 3 | **IN** |
-| [#7](https://github.com/HealthAI-Corpo/healthai-agile/issues/7) | US 3 — Génération séance IA (Ollama) | 5 | **IN** |
-| [#8](https://github.com/HealthAI-Corpo/healthai-agile/issues/8) | US 4 — Matching fuzzy exercices | 3 | **IN** |
-| [#23](https://github.com/HealthAI-Corpo/healthai-agile/issues/23) | chore: CI GitHub Actions | 1 | **Stretch** |
-| [#21](https://github.com/HealthAI-Corpo/healthai-agile/issues/21) | chore: init Next (UI) | 3 | **Reporté Sprint 2** — Swagger suffit pour la démo |
-| [#24](https://github.com/HealthAI-Corpo/healthai-agile/issues/24) | chore: Feature engineering | 3 | **Reporté Sprint 2** — prérequis de #25 (S2) |
+| Issue                                                             | Titre                                  | SP  | Décision                                           |
+| ----------------------------------------------------------------- | -------------------------------------- | --- | -------------------------------------------------- |
+| [#22](https://github.com/HealthAI-Corpo/healthai-agile/issues/22) | chore: Docker Compose + Ollama         | 2   | **IN — BLOCKER**                                   |
+| [#20](https://github.com/HealthAI-Corpo/healthai-agile/issues/20) | chore: init BDD PostgreSQL             | 2   | **IN — BLOCKER**                                   |
+| [#5](https://github.com/HealthAI-Corpo/healthai-agile/issues/5)   | US 1 — Auth JWT                        | 3   | **IN**                                             |
+| [#6](https://github.com/HealthAI-Corpo/healthai-agile/issues/6)   | US 2 — Profil sportif                  | 3   | **IN**                                             |
+| [#7](https://github.com/HealthAI-Corpo/healthai-agile/issues/7)   | US 3 — Génération séance IA (Ollama)   | 5   | **IN**                                             |
+| [#8](https://github.com/HealthAI-Corpo/healthai-agile/issues/8)   | US 4 — Matching fuzzy exercices        | 3   | **IN**                                             |
+| [#12](https://github.com/HealthAI-Corpo/healthai-agile/issues/12) | US 8 — Estimation des calories brûlées | 2   | **IN — tiré en avance** (Timéo, si #7 + #8 Done)   |
+| [#23](https://github.com/HealthAI-Corpo/healthai-agile/issues/23) | chore: CI GitHub Actions               | 1   | **Stretch**                                        |
+| [#21](https://github.com/HealthAI-Corpo/healthai-agile/issues/21) | chore: init Next (UI)                  | 3   | **Reporté Sprint 2** — Swagger suffit pour la démo |
+| [#24](https://github.com/HealthAI-Corpo/healthai-agile/issues/24) | chore: Feature engineering             | 3   | **Reporté Sprint 2** — prérequis de #25 (S2)       |
 
-**Total Sprint 1 retenu : 18 SP** (+ 1 SP stretch)
+**Total Sprint 1 retenu : 20 SP** (+ 1 SP stretch)
 
 ---
 
@@ -50,13 +53,19 @@ Ne pas commencer #7 avant que #22 soit Done.
 
 ## Répartition
 
-_À définir lors de la séance par le SM — respecter l'ordre de démarrage ci-dessus._
+| Membre     | Périmètre                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Eliott** | US 1 — Auth JWT (#5)                                                                                                 |
+| **Wessim** | US 2 — Profil sportif (#6)                                                                                           |
+| **Timéo**  | #20 Init BDD (blocker) · US 3 Génération IA (#7) · US 4 Matching fuzzy (#8) · US 8 Calories (#12, si bande passante) |
+| **Jordan** | #22 Docker Compose + Ollama (blocker) · Infra / CI (#23 stretch)                                                     |
 
 ---
 
 ## Sprint Backlog — Tâches techniques
 
-### #22 — Docker Compose + Ollama _(Wessim — PREMIÈRE TÂCHE)_
+### #22 — Docker Compose + Ollama _(Jordan — PREMIÈRE TÂCHE)_
+
 - [ ] Ajouter service `ollama` dans `docker-compose.yml` (image `ollama/ollama`)
 - [ ] Volume `ollama_storage` pour persistance des modèles entre redémarrages
 - [ ] Script d'init : pull automatique `llama3.2:3b` au premier démarrage
@@ -64,25 +73,29 @@ _À définir lors de la séance par le SM — respecter l'ordre de démarrage ci
 - [ ] **Préparer `tests/fixtures/session_mock.json`** (fallback si Ollama lent en démo — risque élevé)
 - [ ] `OLLAMA_BASE_URL` + `OLLAMA_MODEL` dans `.env.example`
 
-### #20 — Init BDD PostgreSQL _(Timéo — PREMIÈRE TÂCHE)_
+### #20 — Init BDD PostgreSQL _(Timéo — PREMIÈRE TÂCHE, parallèle à #22)_
+
 - [ ] Tables `users`, `profiles`, `sessions` dans `src/db/models.py` (SQLAlchemy async)
 - [ ] Connexion asyncpg via `DATABASE_URL`
 - [ ] Script de seed : 3 profils de test (débutant / intermédiaire / avancé)
 - [ ] `DATABASE_URL` dans `.env.example`
 
 ### #5 — US 1 : Auth JWT _(Eliott)_
+
 - [ ] `POST /auth/register` — hash bcrypt, retour JWT + expiration
 - [ ] `POST /auth/login` — vérification hash, retour JWT
 - [ ] Middleware `Depends(get_current_user)` sur routes protégées
 - [ ] Tests : inscription nominale, login mot de passe incorrect, token expiré
 
-### #6 — US 2 : Profil sportif _(Timéo, après #20 Done)_
+### #6 — US 2 : Profil sportif _(Wessim, après #20 Done)_
+
 - [ ] Modèle `Profile` : `niveau` (1–3), `objectif` (enum), `poids`, `bpm_repos`, `limitations` (list), `equipements` (list)
 - [ ] `POST /profile`, `GET /profile`, `PATCH /profile`
 - [ ] Validation Pydantic stricte (niveau 1–3, objectif enum valide, poids > 0)
 - [ ] Tests : création profil, modification partielle, profil inexistant (404)
 
-### #7 — US 3 : Génération séance IA _(Wessim, après #22 + #20 Done)_
+### #7 — US 3 : Génération séance IA _(Timéo + Jordan, après #22 + #20 Done)_
+
 - [ ] Client Ollama async (HTTPX) avec timeout explicite 15 s
 - [ ] Prompt système : injecter `niveau`, `objectif`, `limitations`, `equipements`
 - [ ] Parser la réponse LLM → schéma Pydantic `SessionGeneree` (exercices, séries, reps, repos)
@@ -90,12 +103,21 @@ _À définir lors de la séance par le SM — respecter l'ordre de démarrage ci
 - [ ] `POST /sessions/generate`
 - [ ] Tests : génération nominale (mock Ollama), fallback activé (Ollama simulé KO)
 
-### #8 — US 4 : Matching fuzzy exercices _(Jordan)_
+### #8 — US 4 : Matching fuzzy exercices _(Timéo)_
+
 - [ ] Charger la table `exercice` depuis PostgreSQL (873 entrées)
 - [ ] Matching RapidFuzz : nom exercice LLM → nom `exercice` (seuil configurable)
 - [ ] `FUZZY_THRESHOLD` dans `.env` (défaut : 75)
 - [ ] Calculer et retourner `taux_couverture` dans la réponse de `POST /sessions/generate`
 - [ ] Tests : match exact (score 100), match proche (>75), inconnu (<75)
+
+### #12 — US 8 : Estimation des calories brûlées _(Timéo — si #7 + #8 Done avant fin de sprint)_
+
+> Tiré en avance depuis Sprint 2 — ne bloque pas les autres US.
+
+- [ ] Analyser la réponse LLM + profil utilisateur pour estimer les calories (règle métier ou appel IA)
+- [ ] Retourner `calories_estimees` dans la réponse `POST /sessions/generate`
+- [ ] Tests : estimation cohérente avec niveau/poids/durée
 
 ---
 
@@ -110,6 +132,7 @@ _À définir lors de la séance par le SM — respecter l'ordre de démarrage ci
 ## Definition of Ready (DoR) — rappel
 
 Avant de commencer une issue :
+
 - [ ] Critères d'acceptation clairs et compris par le développeur
 - [ ] Dépendances disponibles (ex : BDD initialisée avant Profil)
 - [ ] Estimation validée en équipe
@@ -117,6 +140,7 @@ Avant de commencer une issue :
 ## Definition of Done (DoD) — rappel
 
 Une issue est Done quand :
+
 - [ ] `uv run ruff check .` passe sans erreur
 - [ ] `uv run pytest` passe (cas nominal + cas d'erreur)
 - [ ] PR liée à l'issue, validée par le PO
