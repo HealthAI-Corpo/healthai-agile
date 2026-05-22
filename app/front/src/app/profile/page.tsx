@@ -43,7 +43,12 @@ export default function ProfilePage() {
         })
         setImc(p.imc ?? null)
       })
-      .catch(() => { /* premier login : profil vide, pas d'erreur */ })
+      .catch((err: Error) => {
+        // 404 = premier login, formulaire vide attendu
+        if (!err.message.includes('404') && !err.message.toLowerCase().includes('introuvable')) {
+          setError(err.message)
+        }
+      })
       .finally(() => setLoading(false))
   }, [])
 

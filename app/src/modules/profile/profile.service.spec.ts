@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { ProfilSante } from './profil-sante.entity';
 import { ProfileService } from './profile.service';
 import { UpsertProfileDto } from './dto/upsert-profile.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 const VALID_DTO: UpsertProfileDto = {
   poids_kg: 75,
@@ -108,19 +109,32 @@ describe('ProfileService', () => {
       };
       repo.findOne.mockResolvedValue(existing);
 
-      const patch: UpsertProfileDto = {
-        poids_kg: 80,
-        taille_cm: 175,
-        niveau_activite: 'avancé',
-        objectif_principal: 'force',
-        hr_max: 190,
-      };
+      // PATCH partiel : seulement hr_max
+      const patch: UpdateProfileDto = { hr_max: 190 };
 
       await service.updateProfile(USER_ID, patch);
 
       expect(repo.save).toHaveBeenCalledWith(
-        expect.objectContaining({ hr_max: 190, id_profil: 1 }),
+        expect.objectContaining({ hr_max: 190, id_profil: 1, poids_kg: 80 }),
       );
+    });
+
+    it('PATCH partiel ne recalcule pas l\'IMC si poids/taille absents du patch', async () => {
+      const existing = {
+        id_profil: 1,
+        id_utilisateur: USER_ID,
+        poids_kg: 80,
+        taille_cm: 175,
+        imc: 26.1,
+        hr_max: 185,
+      };
+      repo.findOne.mockResolvedValue(existing);
+
+      const patch: UpdateProfileDto = { hr_max: 190 };
+      const result = await service.updateProfile(USER_ID, patch);
+
+      // IMC doit rester calculé depuis poids/taille existants (80kg/175cm = 26.1)
+      expect(result.imc).toBe(26.1);
     });
   });
 

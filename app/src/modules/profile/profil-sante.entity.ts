@@ -1,4 +1,9 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn, ValueTransformer } from 'typeorm';
+
+const numericTransformer: ValueTransformer = {
+  to: (v: number | null) => v,
+  from: (v: string | null) => (v === null || v === undefined ? null : parseFloat(v)),
+};
 
 @Entity('profil_sante')
 @Index('ix_profil_sante_id_profil', ['id_profil'])
@@ -9,13 +14,13 @@ export class ProfilSante {
   @Column({ type: 'integer', unique: true })
   id_utilisateur: number;
 
-  @Column({ type: 'numeric', precision: 5, scale: 2, nullable: true })
+  @Column({ type: 'numeric', precision: 5, scale: 2, nullable: true, transformer: numericTransformer })
   poids_kg: number | null;
 
   @Column({ type: 'integer', nullable: true })
   taille_cm: number | null;
 
-  @Column({ type: 'numeric', precision: 4, scale: 1, nullable: true })
+  @Column({ type: 'numeric', precision: 4, scale: 1, nullable: true, transformer: numericTransformer })
   imc: number | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
@@ -42,7 +47,7 @@ export class ProfilSante {
   @Column({ type: 'integer', nullable: true })
   hr_avg: number | null;
 
-  @Column({ type: 'numeric', precision: 5, scale: 2, nullable: true })
+  @Column({ type: 'numeric', precision: 5, scale: 2, nullable: true, transformer: numericTransformer })
   body_fat_pct: number | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })

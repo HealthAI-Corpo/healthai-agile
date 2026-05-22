@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProfilSante } from './profil-sante.entity';
 import { UpsertProfileDto } from './dto/upsert-profile.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class ProfileService {
@@ -26,15 +27,25 @@ export class ProfileService {
     return this.repo.save(profil);
   }
 
-  async updateProfile(userId: number, dto: UpsertProfileDto): Promise<ProfilSante> {
+  async updateProfile(userId: number, dto: UpdateProfileDto): Promise<ProfilSante> {
     let profil = await this.repo.findOne({ where: { id_utilisateur: userId } });
 
-    const imc = this.computeImc(dto.poids_kg, dto.taille_cm);
+    // Ne merger que les propriétés définies dans le DTO
+    const patch = Object.fromEntries(
+      Object.entries(dto).filter(([, v]) => v !== undefined),
+    );
 
     if (!profil) {
-      profil = this.repo.create({ ...dto, id_utilisateur: userId, imc });
+      profil = this.repo.create({ ...patch, id_utilisateur: userId });
     } else {
-      Object.assign(profil, dto, { imc });
+      Object.assign(profil, patch);
+    }
+
+    // Recalcule l'IMC seulement si poids et taille sont disponibles
+    const poids = profil.poids_kg ? Number(profil.poids_kg) : null;
+    const taille = profil.taille_cm ?? null;
+    if (poids && taille) {
+      profil.imc = this.computeImc(poids, taille);
     }
 
     return this.repo.save(profil);

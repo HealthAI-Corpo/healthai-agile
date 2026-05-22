@@ -146,7 +146,7 @@ describe('Profile (e2e)', () => {
   // ── PATCH /api/v1/profile ────────────────────────────────────────────────
 
   describe('PATCH /api/v1/profile', () => {
-    it('200 met à jour le profil existant', async () => {
+    it('200 met à jour le profil existant avec tous les champs', async () => {
       await repo.save(repo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
 
       const { body } = await request(app.getHttpServer())
@@ -155,6 +155,19 @@ describe('Profile (e2e)', () => {
         .expect(200);
 
       expect(body.hr_max).toBe(190);
+      expect(body.niveau_activite).toBe('intermédiaire');
+    });
+
+    it('200 PATCH partiel — seul hr_max modifié, autres champs inchangés', async () => {
+      await repo.save(repo.create({ ...VALID_PAYLOAD, id_utilisateur: FAKE_USER_ID, imc: 24.5 }));
+
+      const { body } = await request(app.getHttpServer())
+        .patch('/api/v1/profile')
+        .send({ hr_max: 195 })
+        .expect(200);
+
+      expect(body.hr_max).toBe(195);
+      expect(body.poids_kg).toBe(VALID_PAYLOAD.poids_kg);
       expect(body.niveau_activite).toBe('intermédiaire');
     });
 
@@ -167,10 +180,10 @@ describe('Profile (e2e)', () => {
       expect(body.id_utilisateur).toBe(FAKE_USER_ID);
     });
 
-    it('400 si poids_kg absent', () =>
+    it('400 si niveau_activite invalide', () =>
       request(app.getHttpServer())
         .patch('/api/v1/profile')
-        .send({ taille_cm: 175, niveau_activite: 'débutant', objectif_principal: 'force' })
+        .send({ niveau_activite: 'expert' })
         .expect(400),
     );
   });

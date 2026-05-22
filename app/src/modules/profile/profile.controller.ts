@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpsertProfileDto } from './dto/upsert-profile.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ProfileService } from './profile.service';
 
 interface JwtUser { id: number; email: string }
@@ -40,8 +41,8 @@ export class ProfileController {
   }
 
   @Patch()
-  @ApiOperation({ summary: 'Mettre à jour le profil sportif (upsert)' })
-  updateProfile(@Req() req: Request, @Body() dto: UpsertProfileDto) {
+  @ApiOperation({ summary: 'Mettre à jour le profil sportif (upsert partiel)' })
+  updateProfile(@Req() req: Request, @Body() dto: UpdateProfileDto) {
     const user = req.user as JwtUser;
     return this.profileService.updateProfile(user.id, dto);
   }
