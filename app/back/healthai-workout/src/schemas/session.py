@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from pydantic import BaseModel, field_validator
 
 
@@ -35,3 +34,20 @@ class SessionResponse(BaseModel):
     recommendation_id: str | None
 
     model_config = {"from_attributes": True}
+
+
+# ============================================================
+#  NOUVEAUX SCHÉMAS POUR L'US 3 (GÉNÉRATION IA)
+# ============================================================
+
+class AICorpsExercice(BaseModel):
+    exercice: str
+    series: int
+    repetitions: str  # En str car l'IA peut écrire "10-12" ou "Au max"
+    conseil: str
+
+
+class AIWorkoutResponse(BaseModel):
+    status: str
+    meta_data_used: dict
+    generated_workout: dict
