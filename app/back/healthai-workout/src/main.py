@@ -5,6 +5,24 @@ from fastapi import FastAPI
 app = FastAPI(title="HealthAI Workout Service")
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://healthai-ollama-workout:11434")
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
+from src.database_mongo import mongo_db
+from src.routers.sessions import router as sessions_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await mongo_db.connect()
+    yield
+    mongo_db.close()
+
+
+app = FastAPI(title="HealthAI Workout Service", lifespan=lifespan)
+
+app.include_router(sessions_router)
 
 
 @app.get("/")
