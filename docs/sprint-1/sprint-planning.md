@@ -81,7 +81,6 @@ Ne pas commencer #7 avant que #22 soit Done.
 - [ ] `DATABASE_URL` dans `.env.example`
 
 ### #5 — US 1 : Auth JWT _(Eliott)_
-
 - [ ] `POST /auth/register` — hash bcrypt, retour JWT + expiration
 - [ ] `POST /auth/login` — vérification hash, retour JWT
 - [ ] Middleware `Depends(get_current_user)` sur routes protégées
