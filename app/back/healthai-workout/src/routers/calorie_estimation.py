@@ -10,6 +10,8 @@ from src.schemas import (
     CalorieEstimationResponse,
     ModelInfoResponse,
     MetricsResponse,
+    CalorieEstimationWithDefaultsRequest,
+    CalorieEstimationWithDefaultsResponse,
 )
 from src.services.calorie_service import CalorieService
 
@@ -168,6 +170,75 @@ async def predict_calories(
 
         logger.info(
             f"[ENDPOINT] Réponse: prediction={response.prediction} kcal"
+        )
+
+        return response
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[ENDPOINT_ERROR] Erreur inattendue: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur lors du traitement: {str(e)}"
+        )
+
+
+@router.post("/predict-with-defaults", response_model=CalorieEstimationWithDefaultsResponse)
+async def predict_calories_with_defaults(
+    request: CalorieEstimationWithDefaultsRequest,
+) -> CalorieEstimationWithDefaultsResponse:
+    """
+    Prédire les calories avec imputation des features manquantes
+
+    Les features manquantes sont remplacées par les moyennes du dataset d'entraînement.
+
+    **Features optionnelles:**
+    - imc, age, sexe, bpm_max, bpm_moyen, bpm_repos
+    - duree_seance_minutes, type_sport, pourcentage_gras
+    - consommation_eau_ml, niveau_experience
+
+    **Réponse:**
+    - prediction: Calories estimées
+    - imputed_features: Dict des features imputées avec leurs valeurs
+    - original_values: Dict des features originales fournies
+    - model_version, features_used, model_name
+
+    **Cas d'usage:**
+    - Quand l'utilisateur ne peut pas fournir tous les paramètres
+    - Imputation utilise les moyennes de l'ensemble d'entraînement
+    - ⚠️ Les prédictions avec features imputées sont moins fiables
+
+    **Erreurs possibles:**
+    - 422: Validation des valeurs fournies échouée
+    - 500: Erreur de prédiction
+    """
+
+    try:
+        logger.info(f"[ENDPOINT] POST /calorie-estimation/predict-with-defaults - Requête reçue")
+
+        # Obtenir le service
+        service = get_service()
+
+        # Convertir la requête en dictionnaire
+        request_data = request.model_dump()
+
+        # Prédire avec imputation
+        prediction, imputed_features, original_values = service.predict_with_defaults(request_data)
+
+        # Construire la réponse
+        response = CalorieEstimationWithDefaultsResponse(
+            prediction=round(prediction, 2),
+            model_version="1.0.0",
+            features_used=11,
+            model_name="CaloriesIA_1_0_0",
+            imputed_features=imputed_features,
+            original_values=original_values
+        )
+
+        logger.info(
+            f"[ENDPOINT] Réponse: prediction={response.prediction} kcal, "
+            f"features_imputees={len(imputed_features)}"
         )
 
         return response

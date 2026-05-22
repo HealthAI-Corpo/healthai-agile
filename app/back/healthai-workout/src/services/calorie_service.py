@@ -27,6 +27,41 @@ class CalorieService:
         self.metadata = metadata
         self.features_order = metadata.get('features_cols_order', [])
         self.encoders = metadata.get('encoders', {})
+        self.scaler_stats = metadata.get('scaler_stats', {})
+
+    def impute_missing_features(self, data: Dict) -> tuple[Dict, Dict]:
+        """
+        Impute les features manquantes avec les moyennes du dataset d'entraînement
+
+        Args:
+            data: Dict avec les features (certaines peuvent être None)
+
+        Returns:
+            Tuple (data_imputed: dict avec valeurs imputées, imputed_dict: dict des features imputées)
+        """
+        imputed = data.copy()
+        imputed_features = {}
+
+        for feature in self.features_order:
+            value = imputed.get(feature)
+
+            # Si la feature est None ou manquante, l'imputer
+            if value is None:
+                if feature in self.scaler_stats:
+                    mean_value = self.scaler_stats[feature].get('mean', 0)
+                    imputed[feature] = mean_value
+                    imputed_features[feature] = {
+                        "value": mean_value,
+                        "source": "scaler_stats_mean"
+                    }
+                    logger.info(f"[IMPUTATION] {feature}: {mean_value:.2f} (moyenne)")
+                else:
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Impossible d'imputer {feature}: pas de stats disponibles"
+                    )
+
+        return imputed, imputed_features
 
     def _validate_input(self, data: Dict) -> None:
         """
@@ -214,4 +249,61 @@ class CalorieService:
             raise HTTPException(
                 status_code=500,
                 detail=f"Erreur lors de la prédiction: {str(e)}"
+            )
+
+    def predict_with_defaults(self, request_data: Dict) -> tuple[float, Dict, Dict]:
+        """
+        Effectue une prédiction avec imputation des features manquantes
+
+        Args:
+            request_data: Dict avec les 11 features (certaines peuvent être None)
+
+        Returns:
+            Tuple (prediction: float, imputed_features: dict, original_values: dict)
+
+        Raises:
+            HTTPException: En cas d'erreur
+        """
+        try:
+            logger.info(f"[PREDICT_WITH_DEFAULTS_START] Début de prédiction avec imputation")
+
+            # Tracker les valeurs originales
+            original_values = {k: v for k, v in request_data.items() if v is not None}
+
+            # Imputer les valeurs manquantes
+            imputed_data, imputed_features = self.impute_missing_features(request_data)
+
+            # Valider les données imputées
+            self._validate_input(imputed_data)
+            logger.info("[VALIDATION] Contraintes métier vérifiées (après imputation)")
+
+            # Encoder les features catégoriques
+            encoded_data = self._encode_categorical_features(imputed_data)
+            logger.info(f"[ENCODING] Encodage: sexe={encoded_data.get('sexe')}, "
+                       f"type_sport={encoded_data.get('type_sport')}")
+
+            # Construire le vecteur de features
+            feature_vector = self._build_feature_vector(encoded_data)
+
+            # Normaliser
+            normalized_features = self._normalize_features(feature_vector)
+
+            # Prédiction
+            prediction = self.model.predict(normalized_features)[0]
+            logger.info(f"[PREDICTION] Prédiction brute: {prediction:.2f} kcal")
+
+            logger.info(
+                f"[PREDICT_WITH_DEFAULTS_END] Succès - Prédiction: {prediction:.2f} kcal, "
+                f"Features imputées: {len(imputed_features)}"
+            )
+
+            return float(prediction), imputed_features, original_values
+
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"[PREDICT_WITH_DEFAULTS_ERROR] Erreur: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Erreur lors de la prédiction avec defaults: {str(e)}"
             )
